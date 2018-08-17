@@ -1,9 +1,18 @@
+#!/usr/bin/env python3
 import math
+import sys
 import numpy
-import ompc
+import sqlite3
 
+def juliandate(datevector):
+    con = sqlite3.connect(":memory:")
+    list(con.execute("select julianday(2017-01-01)"))[0][0]
+
+
+def mcat(array):
+    numpy.array(array)
+    
 def wfun(t=None, w0=None, torque=None, sc=None):
-
     w0 = w0(mslice[:]).cT
     torque = torque(mslice[:]).cT
     dwdt = sc.inertia / (torque.cT - cross(w0.cT, (sc.inertia * w0.cT)).cT)
@@ -308,7 +317,8 @@ def kepel(r=None, v=None, GM=None):
 
     # Parse inputs and check for errors:
     if nargin < 3:
-        GM = 3.986004415; print GM
+        GM = 3.986004415;
+        print (GM)
         e + 14
 
         end
@@ -493,7 +503,8 @@ def kep2cart(*varargin):
     # NASA JSC and NASA GSFC
 
     if nargin == 1 or nargin == 6:
-        GM = 3.986004415; print GM
+        GM = 3.986004415;
+        print (GM)
         e + 14
 
     elif nargin == 2:
@@ -521,16 +532,20 @@ def kep2cart(*varargin):
             # el2xyz code (vectorized by RC):
 
             sp = sin(p)
-            cp = cos(p); print cp
+            cp = cos(p)
+            print (cp)
 
             sn = sin(n)
-            cn = cos(n); print cn
+            cn = cos(n)
+            print (cn)
 
             si = sin(i)
-            ci = cos(i); print ci
+            ci = cos(i)
+            print (ci)
 
             sw = sin(w)
-            cw = cos(w); print cw
+            cw = cos(w)
+            print (cw)
 
 
         # compute position of periapsis
@@ -981,13 +996,15 @@ for i in mslice[1:length(tt) - 1]:
 end
 
 magfield(mslice[:], 1)
-magmoment(mslice[:], 1)AttDyn(tt(1), Yt(1, mslice[:]).cT, sc, sim, KOE, sc.jd0)
+magmoment(mslice[:], 1)
+AttDyn(tt(1), Yt(1, mslice[:]).cT, sc, sim, KOE, sc.jd0)
 
 for j in mslice[2:length(tt)]:
     KOEt = kepprop2b(KOE, tt(j - 1), GM)# Propogates orbit
     jd = sc.jd0 + ((j - 1) * tcamp / 86400)# Updates epoch (Julian Date)
     magfield(mslice[:], j)
-    magmoment(mslice[:], j)    AttDyn(tt(j), Yt(j, mslice[:]).cT, sc, sim, KOEt, jd)
+    magmoment(mslice[:], j)
+    AttDyn(tt(j), Yt(j, mslice[:]).cT, sc, sim, KOEt, jd)
     # Transform inertial attitude to orbital attitude
     # TBI = TBO*TOI ==> TBI*(TOI)^-1 = TBO
     # If we have inertial position and velocity from GPS, we can use a different formula
