@@ -3,7 +3,7 @@ import math
 import sys
 import numpy
 import sqlite3
-
+# sdihaspif
 def juliandate(datevector):
     con = sqlite3.connect(":memory:")
     list(con.execute("select julianday(2017-01-01)"))[0][0]
