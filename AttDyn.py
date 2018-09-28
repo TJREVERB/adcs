@@ -20,3 +20,4 @@ def att_dyn(t, Y, sc, sim, KOE, jd):
     #    q0.append(val)
     q0 = Y[1:4] # Quaternion rotation from inertial to vehicle frame
     w0 = Y[5:7] # Angular velocity vector of satellite in vehicle frame
+    dcm = q2dcm(q0) # DCM from inertial to vehicle frame
