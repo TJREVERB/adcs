@@ -50,7 +50,7 @@ def orbitalDecay():
       mm = (1440/pm)
       nmm = (1440/((p-dp))/60)
       decay = (dp/dt/p)*mm
-          print('{:<10}'.format(t),'{:^10}'.format(h),'{:>10}'.format(p/60) )
+      print('{:<10}'.format(t),'{:^10}'.format(h),'{:>10}'.format(p/60) )
       t += dt
       p -= dp
       r = (g*me*p*p/4/math.pi/math.pi)**(1/3)

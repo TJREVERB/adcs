@@ -1,5 +1,5 @@
 % AttDyn
-% Created by Anonto Zaman and Ayush Rautwar 3/25/2018
+% Created by Anonto Zaman  3/25/2018
 % Function that describes the differential equation of q
 % Inputs are: 
 %   t = time
@@ -38,9 +38,8 @@ qerr = getqerr(q0,qref);
 thetaerr = getthetaerr(qerr);
 %ctcomm = -1*sim.gain*thetaerr-1*sim.rgain*(w0-sim.wref);                                  % Expected control torque (row vector)
 ctcomm = -1*sim.gain*thetaerr;
-magdip = getMC(ctcomm',bV,sim.mmax,sim.mtrans);                 % Magnetic dipole in body frame
-dtorque = .5* 7.9*10^-13;    %.5* atmdensity * dragco * arearamdir * velocityramdir * [cpx - cmx; 0 ;cpz - cmz]
-ctprod = cross(magdip,bV)+dtorque;
+magdip = getMC(ctcomm',bV,sim.mmax,sim.mtrans);               % Magnetic dipole in body frame
+ctprod = cross(magdip,bV);
 
 %% dydt component
 dydt(1:4) = .5*qmult([w0,0],q0);                % Initializes first part of q  
