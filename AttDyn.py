@@ -1,6 +1,5 @@
 """
 Attitiude Dynamics
-Created by Anonto Zaman, BEING TRANSLATED by Jason Chen
 Function that describes the differential equation of q
 Inputs are:
 t = time
