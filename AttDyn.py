@@ -1,5 +1,6 @@
 """
 Attitiude Dynamics
+Created by Anonto Zaman, BEING TRANSLATED by Jason Chen
 Function that describes the differential equation of q
 Inputs are:
 t = time
@@ -12,6 +13,7 @@ KOE = struct of spacecraft keplerian orbital elements
 """
 import numpy as np
 import datetime
+from jdcal import gcal2jd, jd2gcal
 
 def att_dyn(t, Y, sc, sim, KOE, jd):
     Y = np.array([Y]) # Instantiates Y as a 2D array
@@ -24,3 +26,6 @@ def att_dyn(t, Y, sc, sim, KOE, jd):
     dcm = q2dcm(q0) # DCM from inertial to vehicle frame
 
     #Magnetic Field Model
+    ps = jd - 2400000.5 # Done to increase precision to microseconds
+    datetime.datetime.strptime(jd2gcal(2400000.5, ps),'%Y%m%Y%')
+    epochvec =
