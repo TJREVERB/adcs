@@ -12,7 +12,6 @@ transformation matrix from body to magnetorquer frame)
 KOE = struct of spacecraft keplerian orbital elements
 """
 import numpy as np
-import datetime
 from jdcal import gcal2jd, jd2gcal
 
 def att_dyn(t, Y, sc, sim, KOE, jd):
@@ -26,12 +25,15 @@ def att_dyn(t, Y, sc, sim, KOE, jd):
     dcm = q2dcm(q0) # DCM from inertial to vehicle frame
 
     #Magnetic Field Model
-    ps = jd - 2400000.5 # Done to increase precision to microseconds
-    dtarray = [] # Blank datetime array
-    datetime.datetime(jd2gcal(2400000.5, ps)))
-    dtarray.append
-    # No idea if this works, adds converted Julian date to the Gregorian
-    # format of (YYYY, M, D, decimal of a day). Instantiates this as a
-    # datetime object. Appends this object to a datetime array.
-    for x in range(0, len(dtarray))
-        epochvec = [[]]
+    ps = jd - 2400000.5 # Done to increase time precision
+    epochvec = list(jd2gcal(2400000.5, ps))  #Converts tuple to list
+
+    hours = int(epochvec[3]*24)
+    epochvec.append(epochvec[3]*24 - hours) #Sets jdtuple[4] to decimal of hours
+    epochvec[3] = hours
+
+    minutes = int(epochvec[4]*60)
+    epochvec.append(epochvec[4]*60 - minutes)
+    epochvec[4] = minutes
+
+    epochvec[5] = (epochvec[5]*60)

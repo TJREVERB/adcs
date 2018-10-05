@@ -8,13 +8,20 @@ print(y)
 QQ = {b+1:b for b in y}
 print(QQ)
 """
-
 from jdcal import gcal2jd, jd2gcal
 import datetime
-jd = 2451545.234567
+jd = 2458396.673843
 ps = jd - 2400000.5
-adit = jd2gcal(2400000.5, ps)
-epochvec = [[]]
-for index in adit:
-    epochvec[index]
-print(adit[0])
+epochvec = list(jd2gcal(2400000.5, ps)) #Converts tuple to list
+print(epochvec)
+
+hours = int(epochvec[3]*24)
+epochvec.append(epochvec[3]*24 - hours) #Sets jdtuple[4] to decimal of hours
+epochvec[3] = hours
+
+minutes = int(epochvec[4]*60)
+epochvec.append(epochvec[4]*60 - minutes)
+epochvec[4] = minutes
+
+epochvec[5] = (epochvec[5]*60)
+print(epochvec)
