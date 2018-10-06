@@ -12,5 +12,18 @@ KOE is defined as in kepel.py, as follows:
 ---MORE DESCRIPTION---
 Created by Jason Chen 10/6/18
 """
+"""
+TO USE ASTROPY:
+pip install -U pytest
+pip install clang
+pip install --upgrade setuptools
+pip install astropy --no-deps
+IF YOU ENCOUNTER AN ERROR: Microsoft Visual C++ 14.0 is required.
+GO TO: https://visualstudio.microsoft.com/visual-cpp-build-tools/
+INSTALL: Build Tools for Visual Studio 2017
+ONCE THE EXE IS RUNNING, INSTALL THE CORE C++ PACKAGE (around 5.3 GB).
+pip install astropy again.
+pip install poliastro.
+"""
 import poliastro
-from astropy import coordinates
+import astropy

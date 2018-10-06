@@ -30,9 +30,7 @@ print(epochvec)
 """
 Y = [0, 1]
 print(Y)
-Y = np.matrix([Y])
+Y = np.array(Y)
 print(Y)
 Y = Y.reshape(-1, 1)
-print(Y)
-Y = Y.getH()
 print(Y)
