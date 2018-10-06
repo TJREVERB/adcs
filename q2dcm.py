@@ -1,5 +1,5 @@
 # Function q2dcm(q), returns array R
-# Created by Anonto Zaman, Translated by Jason Chen
+# Created by Anonto Zaman, Translated to Python by Jason Chen
 # Converts from a quaternion [vector;scalar] to a direction cosine matrix
 
 def q2dcm(q):
