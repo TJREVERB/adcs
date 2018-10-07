@@ -18,12 +18,15 @@ pip install -U pytest
 pip install clang
 pip install --upgrade setuptools
 pip install astropy --no-deps
-IF YOU ENCOUNTER AN ERROR: Microsoft Visual C++ 14.0 is required.
+IF YOU ENCOUNTER THIS ERROR: Microsoft Visual C++ 14.0 is required.
 GO TO: https://visualstudio.microsoft.com/visual-cpp-build-tools/
 INSTALL: Build Tools for Visual Studio 2017
 ONCE THE EXE IS RUNNING, INSTALL THE CORE C++ PACKAGE (around 5.3 GB).
-pip install astropy again.
-pip install poliastro.
+TRY AGAIN: pip install astropy
+pip install poliastro
 """
 import poliastro
 import astropy
+
+#Test input: (7712.1869, 0.001, 63.43, 135.00, 90.00, 0.0)
+#Test output: (-2436.45, -2436.45, 6891.037)

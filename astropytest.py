@@ -43,7 +43,7 @@ def cart_2_kep(r_vec,v_vec):
     n = np.sqrt(mu/(a**3))
     T = t - (1/n)*(EA - e*np.sin(EA))
 
-    return a,e,i,omega_AP,omega_LAN,T, EA
+    return a,e,i,omega_AP,omega_LAN,T,EA
 
 def kep_2_cart(a,e,i,omega_AP,omega_LAN,T, EA):
 
@@ -82,7 +82,6 @@ def kep_2_cart(a,e,i,omega_AP,omega_LAN,T, EA):
 
 a,e,i,omega_AP,omega_LAN,T, EA = cart_2_kep(r_test,v_test)
 r_test2, v_test2 = kep_2_cart(a,e,i,omega_AP,omega_LAN,T, EA)
-
 
 print(r_test2 - r_test)
 print(v_test2 - v_test)
