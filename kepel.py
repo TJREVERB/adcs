@@ -1,13 +1,13 @@
 """
-Function kepel(r, v, mu), where r is the input position vector, v is the
+Function kepel(r, v), where r is the input position vector, v is the
 input velocity vector, and mu represents the EGM-96 value of the Earth's
 gravitational constant, GM = 3.986004415E+14 m^3/sec^2. r and v units are in
-meters. All angles in radians. r and v MUST BE numpy arrays. Returns a
-KeplerianElements object, KOE.
+meters. All angles in radians. r and v MUST BE numpy arrays.
+Returns an array, KOE.
 Retrieved from:
 https://github.com/RazerM/orbital/blob/0.7.0/orbital/utilities.py#L252
-Created by Jason Chen 10/8/18
 Refer to kep2cart.py for orbitalpy and astropy installation instructions.
+Created by Jason Chen 10/8/18
 """
 import numpy as np
 import math

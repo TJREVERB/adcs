@@ -5,15 +5,15 @@ of Earth's gravitational constant, GM = 3.986004415E+14 m^3/sec^2. All
 angles are in radians. Position vector given in meters, velocity vector
 given in meters/second.
 ***IMPORTANT***
-KOE is an orbitalpy object. KOE is defined as in kepel.py, as follows:
-    KOE.a =  semi-major axis
-    KOE.e = eccentricity
-    KOE.i = inclination
-    KOE.raan = right ascension of the ascending node
-    KOE.arg_pe = argument of periapse
-    KOE.M0 = true anomaly
-    KOE.body = reference body (dictates GM value)
-    KOE.ref_epoch = optional reference time frame
+KOE is an array of 6 values. KOE is defined as in kepel.py, as follows:
+    KOE[0] = a = semi-major axis
+    KOE[1] = e = eccentricity
+    KOE[2] = i = inclination
+    KOE[3] = raan = right ascension of the ascending node
+    KOE[4] = arg_pe = argument of periapse
+    KOE[5] = M0 = true anomaly
+    body = reference body (dictates GM value)
+    ref_epoch = optional reference time frame
 ***************
 Created by Jason Chen 10/6/18
 """
