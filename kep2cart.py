@@ -24,9 +24,19 @@ INSTALL: Build Tools for Visual Studio 2017
 ONCE THE EXE IS RUNNING, INSTALL THE CORE C++ PACKAGE (around 5.3 GB).
 TRY AGAIN: pip install astropy
 pip install poliastro
+pip install orbitalpy
 """
-import poliastro
-import astropy
 
+from scipy.constants import kilo
+import numpy as np
+import orbital
+from orbital import earth, KeplerianElements, Maneuver, utilities
+from orbital.utilities import Position, Velocity, StateVector
+
+# Defining the orbit
+orbitx = KeplerianElements(a=7712186.9, e=0.001, i=1.107, raan=2.3562,
+    arg_pe=1.5708, M0=0.0, body=earth,
+    ref_epoch=None)
+print(orbitx.r, orbitx.v)
 #Test input: (7712.1869, 0.001, 63.43, 135.00, 90.00, 0.0)
 #Test output: (-2436.45, -2436.45, 6891.037)
