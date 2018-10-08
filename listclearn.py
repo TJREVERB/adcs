@@ -28,9 +28,10 @@ epochvec[4] = minutes
 epochvec[5] = (epochvec[5]*60)
 print(epochvec)
 """
-Y = [0, 1]
+Y = np.array([0.0, 2.0])
 print(Y)
-Y = np.array(Y)
-print(Y)
-Y = Y.reshape(-1, 1)
-print(Y)
+
+"""
+[x for x in range(10)]
+[[x] for x in a]
+"""

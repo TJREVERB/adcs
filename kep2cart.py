@@ -1,19 +1,24 @@
 """
 Function kep2cart(KOE), returns Cartesian position/velocity vectors
-[R;V] from Keplerian orbital elements (KOE), using the EGM-96 value
-of Earth's gravitational constant, GM = 3.986004415E+14 m^3/sec^2.
-KOE is defined as in kepel.py, as follows:
-    KOE.sma = semi-major axis
-    KOE.ecc = eccentricity
-    KOE.incl = inclination
+[[R],[V]] from Keplerian orbital elements (KOE), using the EGM-96 value
+of Earth's gravitational constant, GM = 3.986004415E+14 m^3/sec^2. All
+angles are in radians. Position vector given in meters, velocity vector
+given in meters/second.
+***IMPORTANT***
+KOE is an orbitalpy object. KOE is defined as in kepel.py, as follows:
+    KOE.a =  semi-major axis
+    KOE.e = eccentricity
+    KOE.i = inclination
     KOE.raan = right ascension of the ascending node
-    KOE.argp = argument of periapse
-    KOE.tran = true anomaly
----MORE DESCRIPTION---
+    KOE.arg_pe = argument of periapse
+    KOE.M0 = true anomaly
+    KOE.body = reference body (dictates GM value)
+    KOE.ref_epoch = optional reference time frame
+***************
 Created by Jason Chen 10/6/18
 """
 """
-TO USE ASTROPY:
+TO USE ASTROPY/ORBITALPY:
 pip install -U pytest
 pip install clang
 pip install --upgrade setuptools
@@ -23,20 +28,24 @@ GO TO: https://visualstudio.microsoft.com/visual-cpp-build-tools/
 INSTALL: Build Tools for Visual Studio 2017
 ONCE THE EXE IS RUNNING, INSTALL THE CORE C++ PACKAGE (around 5.3 GB).
 TRY AGAIN: pip install astropy
-pip install poliastro
 pip install orbitalpy
 """
-
-from scipy.constants import kilo
 import numpy as np
-import orbital
-from orbital import earth, KeplerianElements, Maneuver, utilities
-from orbital.utilities import Position, Velocity, StateVector
+from orbital import earth, KeplerianElements, utilities
+from orbital.utilities import Position, Velocity
 
-# Defining the orbit
-orbitx = KeplerianElements(a=7712186.9, e=0.001, i=1.107, raan=2.3562,
-    arg_pe=1.5708, M0=0.0, body=earth,
-    ref_epoch=None)
-print(orbitx.r, orbitx.v)
-#Test input: (7712.1869, 0.001, 63.43, 135.00, 90.00, 0.0)
-#Test output: (-2436.45, -2436.45, 6891.037)
+def kep2cart(KOE):
+    orbitx = KeplerianElements(a=KOE[0], e=KOE[1], i=KOE[2], raan=KOE[3],
+    arg_pe=KOE[4], M0=KOE[5], body=earth)
+    cart = np.array([list(orbitx.r), list(orbitx.v)])
+    return cart
+
+"""
+Test input:
+    KOE = [7712185.793304873, 0.0009998565957693001, 1.1070000000336715,
+            2.356199994947052, 1.5708534575885496, 6.283131851920631]
+    print(kep2cart(KOE))
+Test output:
+    [[-2.43706002e+06 -2.43712690e+06  6.89057919e+06]
+     [ 5.08864926e+03 -5.08857647e+03 -2.36413505e-02]]
+"""
