@@ -26,5 +26,3 @@ def AttDyn(t, Y, sc, sim, KOE, jd):
     epochvec = jd2dvec(jd)
     cart = kep2cart(KOE)
     cartloc = cart[1:3]
-
-    getMC
