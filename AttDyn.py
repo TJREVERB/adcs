@@ -14,7 +14,7 @@ KOE = struct of spacecraft keplerian orbital elements
 import numpy as np
 from jdcal import gcal2jd, jd2gcal
 
-def att_dyn(t, Y, sc, sim, KOE, jd):
+def AttDyn(t, Y, sc, sim, KOE, jd):
     Y = np.matrix([Y]) # Instantiates Y as a 2D matrix
     Y = Y.reshape(-1, 1) # Transposes Y to a column vector
     Y = Y.getH() # Returns the complex conjugate transpose, now a row vector
@@ -28,4 +28,3 @@ def att_dyn(t, Y, sc, sim, KOE, jd):
     cartloc = cart[1:3]
 
     getMC
-    
