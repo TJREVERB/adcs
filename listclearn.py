@@ -11,7 +11,6 @@ print(QQ)
 from jdcal import gcal2jd, jd2gcal
 import numpy as np
 
-"""
 jd = 2.458396E+6 #2458396, either format works
 ps = jd - 2400000.5
 epochvec = list(jd2gcal(2400000.5, ps)) #Converts tuple to list
@@ -31,6 +30,7 @@ print(epochvec)
 Y = np.array([0.0, 2.0])
 print(Y)
 
+"""
 """
 [x for x in range(10)]
 [[x] for x in a]

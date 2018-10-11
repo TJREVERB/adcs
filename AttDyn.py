@@ -25,3 +25,7 @@ def att_dyn(t, Y, sc, sim, KOE, jd):
     #Magnetic Field Model
     epochvec = jd2dvec(jd)
     cart = kep2cart(KOE)
+    cartloc = cart[1:3]
+
+    getMC
+    
