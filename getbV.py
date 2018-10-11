@@ -1,5 +1,7 @@
-def getbV(bv)
+# Calculation of magnetic field in satellite body frame from magnetometer
+import numpy as np
+def getbV():
+    bv = np.zeros(3)
+    return bv
 
-bv = [0 for i in range(n) ] for j in range(m) ];
-
-##creates matrix of size n * m
+# Initializes empty vector for placeholder magnetic field
