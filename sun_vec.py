@@ -2,9 +2,9 @@
 #
 #  [sun_equ] = sun_vec(start_day)
 #
-#  Inputs:    start_day    [1,n] days since 00:00:00 01/06/1980
+#  Inputs:    start_day    int: days since 00:00:00 01/06/1980
 #
-#  Outputs:   sun_equ      [3,n] Earth-Sun vector in an ECI frame
+#  Outputs:   sun_equ      [3,1] Earth-Sun vector in an ECI frame
 #
 #  Given start_day measured in days since 01/06/80, computes true
 #  longitude of the Sun.  Earth-Sun vector is then computed in the
@@ -44,4 +44,4 @@ def sun_vec(start_day):
     R = np.array([[1,0,0],[0,cos(inc_E),sin(inc_E)],[0,-sin(inc_E),cos(inc_E)]],np.float32)
     sun_ecl = np.array([[cos(L_sun)],[sin(L_sun)],[0]],np.float32)
     #  Since R is constant through time, can do a simple matrix multiply
-    sun_equ = np.matmul(R,sun_ecl)   # [3,n]
+    sun_equ = np.matmul(R,sun_ecl)   # [3,1]
