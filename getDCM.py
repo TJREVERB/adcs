@@ -8,6 +8,12 @@ Interface between data and ADCS
 ecef2eci (should be from a toolbox)
 
 """
+import numpy as np
+def getDCM(bV, sV, bI, sI):
+    q1 = q1.reshape(-1,1) #q1 is np.matrix
+        # need to figure out how to do the convert using reshape,
+        #once figured out, all of them require same steps
+
 
 
 """
