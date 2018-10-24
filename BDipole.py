@@ -15,4 +15,13 @@ Wertz, J., ed. "Spacecraft Attitude Determination and
 Control," Kluwer, 1976, 783-784.
 Created by Jason Chen 10/18/19
 """
-def BDipole(r,jd,v):
+import numpy as np
+import math
+from math import radians
+
+def BDipole(*args):
+    if(len(args) < 2):
+        a = 7000;
+        el = [a, math.radians(55), 0, 0, 0, 0, 0]
+        p = Period(a)
+    #bDot = np.zeros(3,n)
