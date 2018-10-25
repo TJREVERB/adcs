@@ -1,5 +1,5 @@
-# Converted by Derek Goh
-# October 19th, 2018
+# Converted by Derek Goh, Bhargava Elavarthi, Ayush Rautwar
+# October 24th, 2018
 
 import numpy as np
 """
@@ -24,12 +24,13 @@ def getDCM(bV, sV, bI, sI):
     # bI = np.reshape(bI, (1, -1))
     # sI = np.reshape(sI, (1, -1))
      bV = np.reshape(bV, (1, -1))/normalize(bV)
+     #bV1 = bV.getH()
      sV = np.reshape(sV, (1, -1))/normalize(sV)
+    # sV1 = sV.getH()
      bI = np.reshape(bI, (1, -1))/normalize(bI)
      sI = np.reshape(sI, (1, -1))/normalize(sI)
-
-
-     vu2 = np.cross(bV, sV)
+     #bV or SV are not conjugate transposed, use .getH method to transpose
+     vu2 = np.cross(bV1, sV1)      #ValueError: incompatible dimensions for cross product
      vu2 = vu2/normalize(vu2)
      vmV = np.matrix([bV.getH(), vu2.getH(), np.cross(bV, vu2)].getH())
      iu2 = np.cross(bI, sI)
@@ -52,4 +53,3 @@ def getDCM(bV, sV, bI, sI):
 # sv = R*si;
 # RR = getDCM(bv,sv,bi,si); # Run the made-up vectors through the routine
 # dR = R-RR # This should be close to zero
-
