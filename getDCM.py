@@ -3,12 +3,16 @@
 
 import numpy as np
 
+<<<<<<< HEAD
 #bV and sV converted on board
 #Know instantaneous time, at any measurement (possibly from the GPS)
 #Convert GPS time to UTC Time
 #Interface between data and ADCS
 #ecef2eci (should be from a toolbox)
 
+=======
+"""
+>>>>>>> c9aed83f3f62b6656a03c554fe24e39c272124e8
 def normalize(v):
    norm=np.linalg.norm(v, ord=1)
    if norm==0:
@@ -32,8 +36,26 @@ def q2dcm(q):
 
    return R
 
+def q2dcm(q):
+    R = np.zeros((3,3))
+
+    R[0,0] = q[0]^2-q[1]^2-q[2]^2+q[3]^2
+    R[0,1] = 2*(q[0]*q[1]+q[2]*q[3])
+    R[0,2] = 2*(q[0]*q[2]-q[1]*q[3])
+
+    R[1,0] = 2*(q[0]*q[1]-q[2]*q[3])
+    R[1,1] = -q[0]^2+q[1]^2-q[2]^2+q[3]^2
+    R[1,2] = 2*(q[1]*q[2]+q[0]*q[3])
+
+    R[2,0] = 2*(q[0]*q[2]+q[1]*q[3])
+    R[2,1] = 2*(q[1]*q[2]-q[0]*q[3])
+    R[2,2] = -q[0]^2-q[1]^2+q[2]^2+q[3]^2
+
+    return R
+
 
 def getDCM(bV, sV, bI, sI):
+<<<<<<< HEAD
   bV = np.array(bV)
   sV = np.array(sV)
   bI = np.array(bI)
@@ -52,6 +74,26 @@ def getDCM(bV, sV, bI, sI):
   imV = np.array(bI.getH(), iu2.getH(), np.cross(bI, iu2).getH()) #
   ivDCM = vmV*imV
   return ivDCM
+=======
+   bV = np.array(bV)
+   sV = np.array(sV)
+   bI = np.array(bI)
+   sI = np.array(sI)
+   
+   bV = np.reshape(bV, -1) # 
+   sV = np.reshape(sV, -1) #
+   bI = np.reshape(bI, -1) #
+   sI = np.reshape(sI, -1) #
+
+   vu2 = np.cross(bV, sV)
+   vu2 = normalize(vu2)
+   vmV = np.array(bV.getH(), vu2.getH(), np.cross(bV, vu2).getH()) #
+   iu2 = np.cross(bI, sI)
+   iu2 = normalize(iu2)
+   imV = np.array(bI.getH(), iu2.getH(), np.cross(bI, iu2).getH()) #
+   ivDCM = vmV*imV
+   return ivDCM
+>>>>>>> c9aed83f3f62b6656a03c554fe24e39c272124e8
 
 # q = normalize([0.1 0.2 -0.3 1].getH())
 # R = q2dcm(q)
@@ -65,8 +107,13 @@ def getDCM(bV, sV, bI, sI):
 print(getDCM([1,2,3],[1,2,3],[1,2,3],[1,2,3]))
 
 
+<<<<<<< HEAD
 # SHD: I recommend having a test program to test the logic of this function.
 # For example, see below. I commented out so it doesn’t run, but uncomment and
+=======
+# SHD: I recommend having a test program to test the logic of this function. 
+# For example, see below. I commented out so it doesn't run, but uncomment and
+>>>>>>> c9aed83f3f62b6656a03c554fe24e39c272124e8
 # paste the lines to the Command window to check. Be sure to comment the
 # lines again and save this function before actually executing the line in
 # the Command window.
