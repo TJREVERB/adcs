@@ -10,6 +10,7 @@ Interface between data and ADCS
 ecef2eci (should be from a toolbox)
 
 """
+    #print getDCM([1,2,3,4], [1,2,3,4], [1,2,3,4], [1,2,3,4])
 
 def normalize(v):
     norm=np.linalg.norm(v, ord=1)
