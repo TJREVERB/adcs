@@ -33,10 +33,12 @@ def getDCM(bV, sV, bI, sI):
   bI = np.matrix(bI)
   sI = np.matrix(sI)
 
-  bV = np.reshape(bV, -1) #
-  sV = np.reshape(sV, -1) #
-  bI = np.reshape(bI, -1) #
-  sI = np.reshape(sI, -1) #
+  bV = np.reshape(bV, (1,-1))/LA.norm(bV) #
+  sV = np.reshape(sV, (1,-1))/LA.norm(sV)  #
+  bI = np.reshape(bI, (1,-1))/LA.norm(bI)  #
+  sI = np.reshape(sI, (1,-1))/LA.norm(sI)  #
+
+
 
   vu2 = np.cross(bV, sV)
   vu2 = LA.norm(vu2)
