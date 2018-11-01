@@ -50,4 +50,4 @@ def sun_vec(start_day):
     sun_equ = np.matmul(R,sun_ecl)   # [3,1]
     return sun_equ
 
-print(sun_vec(2458424)) #Nov. 1st, 2018 @ 12:00 PM
+ # print(sun_vec(2458424)) # Nov. 1st, 2018 @ 12:00 PM
