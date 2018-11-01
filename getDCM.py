@@ -1,5 +1,6 @@
 # Converted by Derek Goh
 # October 29th, 2018
+
 from numpy import linalg as LA
 import numpy as np
 
@@ -30,6 +31,15 @@ def q2dcm(q):
 
 
 def getDCM(bV, sV, bI, sI):
+  for i in bV:
+    i = i*1.00
+  for i in sV:
+    i = i*1.00
+  for i in bI:
+    i = i*1.00
+  for i in sI:
+    i = i*1.00
+
   bV = np.matrix(bV)
   sV = np.matrix(sV)
   bI = np.matrix(bI)
@@ -59,7 +69,16 @@ def getDCM(bV, sV, bI, sI):
 # RR = getDCM(bv, sv, bi, si)
 # dR = R - RR
 
-#getDCM([1,2,3],[1,2,3],[1,2,3],[1,2,3])
+getDCM([1,2,3],[1,2,3],[1,2,3],[1,2,3])
+getDCM([1,2],[1,2],[1,2],[1,2])
+getDCM([0.1,0.2,0.3],[0.1,0.2,0.3],[0.1,0.2,0.3],[0.1,0.2,0.3])
+getDCM([0.1,0.2,0.3,0.4],[0.1,0.2,0.3,0.4],[0.1,0.2,0.3,0.4],[0.1,0.2,0.3,0.4])
+getDCM([1.0,2.0,3.0],[1.0,2.0,3.0],[1.0,2.0,3.0],[1.0,2.0,3.0])
+getDCM([1.0,2.0,3.0,4.0],[1.0,2.0,3.0,4.0],[1.0,2.0,3.0,4.0],[1.0,2.0,3.0,4.0])
+getDCM([0.001,0.002,0.003],[0.001,0.002,0.003],[0.001,0.002,0.003],[0.001,0.002,0.003])
+getDCM([10.0,20.0,30.0],[10.0,20.0,30.0],[10.0,20.0,30.0],[10.0,20.0,30.0])
+getDCM([1.0],[1.0],[1.0],[1.0])
+getDCM([1.0,2.0,3.0,4.0,5.0],[1.0,2.0,3.0,4.0,5.0],[1.0,2.0,3.0,4.0,5.0],[1.0,2.0,3.0,4.0,5.0])
 
 
 # SHD: I recommend having a test program to test the logic of this function.
