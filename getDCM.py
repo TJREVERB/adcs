@@ -1,5 +1,6 @@
 # Converted by Derek Goh
-# October 29th, 2018
+# October 30th, 2018
+
 
 from numpy import linalg as LA
 import numpy as np
