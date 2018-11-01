@@ -1,5 +1,20 @@
 import numpy as np
 import math
+from jdcal import gcal2jd, jd2gcal
+
+def jd2dvec(jd):
+
+    ps = jd - 2400000.5 # Done to increase time precision
+    epochvec = list(jd2gcal(2400000.5, ps))  #Converts tuple to list
+    hours = int(epochvec[3]*24)
+    epochvec.append(epochvec[3]*24 - hours) #Sets jdarray[4] to decimal of hours
+    epochvec[3] = hours
+    minutes = int(epochvec[4]*60)
+    epochvec.append(epochvec[4]*60 - minutes)
+    epochvec[4] = minutes
+    epochvec[5] = (epochvec[5]*60)
+    return epochvec
+
 def cubesatSim():
 
     #Spacecraft Properties
@@ -15,7 +30,7 @@ def cubesatSim():
     GM = 3.986004418*(10**14)
     KOE.sma = 6778557
     KOE.ecc = 0.0001973
-    KOE.incl = 51.6397*pi/180                       
+    KOE.incl = 51.6397*pi/180
     KOE.argp = 211.4532*pi/180
     KOE.tran = 0*pi/180
     koeVect = struct2array(KOE)
@@ -26,7 +41,7 @@ def cubesatSim():
     #lla = eci2lla(cartloc.getH(),epoch)
 
     #Magnetic Field Model
-    epochvec = datevec(datetime(sc.jd0,'convertfrom','juliandate')) #Jason, please do the magic
+    epochvec = jd2dvec(sc.jd0)
     lla = eci2lla(cartloc.getH(),epochvec)
     eci2ecef = dcmeci2ecef('IAU-2000/2006',epochvec) #needs to be written
     ecef2eci = eci2ecef.getH()
@@ -81,7 +96,6 @@ def cubesatSim():
 
     #magdip = getMC(ctcomm,bV,mmax,mtrans)
     #ctprod = cross(magdip,bV)
-
 
     #Inputs for plotting
     magmoment = zeros(3,length(tt))
