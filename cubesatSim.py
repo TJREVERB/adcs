@@ -2,19 +2,6 @@ import numpy as np
 import math
 from jdcal import gcal2jd, jd2gcal
 
-def jd2dvec(jd):
-
-    ps = jd - 2400000.5 # Done to increase time precision
-    epochvec = list(jd2gcal(2400000.5, ps))  #Converts tuple to list
-    hours = int(epochvec[3]*24)
-    epochvec.append(epochvec[3]*24 - hours) #Sets jdarray[4] to decimal of hours
-    epochvec[3] = hours
-    minutes = int(epochvec[4]*60)
-    epochvec.append(epochvec[4]*60 - minutes)
-    epochvec[4] = minutes
-    epochvec[5] = (epochvec[5]*60)
-    return epochvec
-
 def cubesatSim():
 
     #Spacecraft Properties
@@ -73,7 +60,7 @@ def cubesatSim():
     #qref = getqref(koeVect)
     #qerr = getqerr(q,qref)
     #thetaerr = getthetaerr(qerr)
-
+"""
 
     #Simulation parameters
     Ts = 100
@@ -125,3 +112,4 @@ def cubesatSim():
         #
         #q = qmult(Yt(j,1:4)',qinv(qmult(getq(1,-pi/2),qmult(getq(3,sc.wo*tt(i)+pi/2),getq(1,sc.inertia)))));
         #att(:,i) = 2*q(1:3);
+    """

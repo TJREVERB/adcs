@@ -9,6 +9,7 @@ import serial
 
 from core import config
 from . import aprs
+from submodules import gps
 
 logger = logging.getLogger("ADCS")
 
@@ -64,38 +65,6 @@ def on_startup():
     logfile = open(os.path.join(log_dir, filename + '.txt'), 'a+')
 
     log('RUN@' + '-'.join([str(x) for x in tlt[3:5]]))
-
-    # send("ANTENNAPOWER OFF")
-
-
-# I NEED TO KNOW WHAT NEEDS TO BE DONE IN NORMAL, LOW POWER, AND EMERGENCY MODES
-def enter_normal_mode():
-    # UPDATE GPS MODULE INTERNAL COORDINATES EVERY 10 MINUTES
-    # time.sleep(600)
-    pass
-
-
-def enter_low_power_mode():
-    # UPDATE GPS MODULE INTERNAL COORDINATES EVERY HOUR
-    # time.sleep(3600)
-    pass
-
-
-def enter_emergency_mode():
-    pass
-
-# TODO fix this
-def get_pry():
-    return (-1,-1,-1)
-
-def get_mag():
-    return (-1,-1,-1)
-
-def get_abs():
-    return (-1,-1,-1)
-
-def can_TJ_be_seen():
-    return True # fix me!
 
 # USE THIS LOG FUNCTION
 def log(msg):
