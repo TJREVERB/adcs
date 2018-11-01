@@ -10,6 +10,7 @@ import serial
 from core import config
 from . import aprs
 from submodules import gps
+from adcs import sun_vec
 
 logger = logging.getLogger("ADCS")
 
@@ -19,29 +20,16 @@ def send(msg):
 
 
 def listen():
+    #There may be delays into the computations, try parallel threads
+    #TEST WITH PROCESSOR
     while True:
-        # Read in a full message from serial
-        time.sleep(1);
-        # Dispatch command
-        # logger.info(line)
-        # print(rr)
-        # log('GOT: '+rr)
-
-
-
-def keyin():
-    while (True):
-        # GET INPUT FROM YOUR OWN TERMINAL
-        # TRY input("shihaoiscoolforcommentingstuff") IF raw_input() doesn't work
-        in1 = input("Type Command: ")
-        send(in1)
-        # send("TJ" + in1 + chr(sum([ord(x) for x in "TJ" + in1]) % 128))
-
+        sun_vec.sun_vec(time.time()/60/60/24)
+        time.sleep(1)
 
 def on_startup():
     # GLOBAL VARIABLES ARE NEEDED IF YOU "CREATE" VARIABLES WITHIN THIS METHOD
     # AND ACCESS THEM ELSEWHERE
-    global t1, logfile, tlt
+    global dcmThread, logfile
     # cached_nmea_obj = (None,None)
 
     # serialPort = config['adcs']['serial_port']
@@ -51,10 +39,8 @@ def on_startup():
     # OPENS THE SERIAL PORT FOR ALL METHODS TO USE WITH 19200 BAUD
     # ser = serial.Serial(serialPort, 9600)
     # CREATES A THREAD THAT RUNS THE LISTEN METHOD
-    t1 = Thread(target=listen, args=(), daemon=True)
-    t1.start()
-
-    tlt = time.localtime()
+    dcmThread = Thread(target=listen, args=(), daemon=True)
+    dcmThread.start()
 
     # Open the log file
     log_dir = os.path.join(config['core']['log_dir'], 'adcs')
