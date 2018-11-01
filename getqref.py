@@ -20,7 +20,7 @@ def getqrefnadir(poskep):
         poskep[i]=poskep[i]*math.pi/180
     target=sun_vec(start_day)
     rascension= np.matrix([math.cos(poskep[3]), math.sin(poskep[3])])
-    inclination= np.matrix([math.cos(poskep[2]), math.sin(poskep[poskep[2]])])
+    inclination= np.matrix([math.cos(poskep[2]), math.sin(poskep[2])])
     argofpedplus=np.matrix([math.cos(poskep[4]+poskep[5]), math.sin(poskep[4]+poskep[5])])
     xy=np.matrix([target[0], target[1]])
     yz=np.matrix([target[1], target[2]])
