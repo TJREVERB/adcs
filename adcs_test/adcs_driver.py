@@ -16,14 +16,22 @@ def send(msg):
     msg += "\n"
     ser.write(msg.encode("utf-8"))
 
+"""""""""""""""""""""""
+MAIN METHODS
+"""""""""""""""""""""""
+def epoch2jul(epoch):
+    if(len(epoch)==6)
+        sum=epoch[0]*365 + epoch[1]*30 + epoch[2] + int(round(24/epoch[3])) +
+        int(round(24*60/epoch[4])) + in
+    return 2458431
+
+"""""""""""""""""""""""
+DRIVING METHODS
+"""""""""""""""""""""""
 def listen():
     while True:
-        # Read in a full message from serial
+        epoch = np.matrix([2018, 11, 8, 12, 00, 00])
         time.sleep(1);
-        # Dispatch command
-        # logger.info(line)
-        # print(rr)
-        # log('GOT: '+rr)
 
 def updateVals(msg):
     #saves velocity data from gps
@@ -42,7 +50,7 @@ def keyin():
 def on_startup():
     # GLOBAL VARIABLES ARE NEEDED IF YOU "CREATE" VARIABLES WITHIN THIS METHOD
     # AND ACCESS THEM ELSEWHERE
-    global t1, logfile, tlt
+    global mainthread, logfile, tlt
     # cached_nmea_obj = (None,None)
 
     # serialPort = config['adcs']['serial_port']
@@ -52,8 +60,10 @@ def on_startup():
     # OPENS THE SERIAL PORT FOR ALL METHODS TO USE WITH 19200 BAUD
     # ser = serial.Serial(serialPort, 9600)
     # CREATES A THREAD THAT RUNS THE LISTEN METHOD
-    t1 = Thread(target=listen, args=(), daemon=True)
-    t1.start()
+    mainthread = Thread(target=listen, args=(), daemon=True)
+    #gpsdata = Thread(target=updateVals, args=(), daemon=True)
+    mainthread.start()
+    #gpsdata.start()
 
     tlt = time.localtime()
 
@@ -87,6 +97,7 @@ def enter_emergency_mode():
     pass
 
 # TODO fix this
+"""
 def get_pry():
     return (-1,-1,-1)
 
@@ -98,7 +109,7 @@ def get_abs():
 
 def can_TJ_be_seen():
     return True # fix me!
-
+"""
 # USE THIS LOG FUNCTION
 def log(msg):
     global logfile
