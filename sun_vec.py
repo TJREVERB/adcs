@@ -21,13 +21,10 @@ from math import pi
 from math import sin
 from math import cos
 def sun_vec(start_day):
-    """
     # Julian days since Jan 0,1900
     #  Reference for this calculation is JD 2,415,020 which
     #  corresponds to 12:00:00 Jan 0,1900 ET (or 12:00:00 Dec 31,1899)
     jd = 29224.5 + start_day
-    """
-    jd = start_day
     #  Mean longitude of sun, measured in the ecliptic from mean
     #  equinox of date:
     L = (279.696678 + 0.9856473354*jd + 2.267e-13*(jd**2))
@@ -49,5 +46,3 @@ def sun_vec(start_day):
     #  Since R is constant through time, can do a simple matrix multiply
     sun_equ = np.matmul(R,sun_ecl)   # [3,1]
     return sun_equ
-
- # print(sun_vec(2458424)) # Nov. 1st, 2018 @ 12:00 PM

@@ -9,8 +9,6 @@ import serial
 
 from core import config
 from . import aprs
-from submodules import gps
-from adcs import sun_vec
 
 logger = logging.getLogger("ADCS")
 
@@ -18,18 +16,33 @@ def send(msg):
     msg += "\n"
     ser.write(msg.encode("utf-8"))
 
-
 def listen():
-    #There may be delays into the computations, try parallel threads
-    #TEST WITH PROCESSOR
     while True:
-        sun_vec.sun_vec(time.time()/60/60/24)
-        time.sleep(1)
+        # Read in a full message from serial
+        time.sleep(1);
+        # Dispatch command
+        # logger.info(line)
+        # print(rr)
+        # log('GOT: '+rr)
+
+def updateVals(msg):
+    #saves velocity data from gps
+    global velocity_data
+    velocity_data = msg
+
+def keyin():
+    while (True):
+        # GET INPUT FROM YOUR OWN TERMINAL
+        # TRY input("shihaoiscoolforcommentingstuff") IF raw_input() doesn't work
+        in1 = input("Type Command: ")
+        send(in1)
+        # send("TJ" + in1 + chr(sum([ord(x) for x in "TJ" + in1]) % 128))
+
 
 def on_startup():
     # GLOBAL VARIABLES ARE NEEDED IF YOU "CREATE" VARIABLES WITHIN THIS METHOD
     # AND ACCESS THEM ELSEWHERE
-    global dcmThread, logfile
+    global t1, logfile, tlt
     # cached_nmea_obj = (None,None)
 
     # serialPort = config['adcs']['serial_port']
@@ -39,8 +52,10 @@ def on_startup():
     # OPENS THE SERIAL PORT FOR ALL METHODS TO USE WITH 19200 BAUD
     # ser = serial.Serial(serialPort, 9600)
     # CREATES A THREAD THAT RUNS THE LISTEN METHOD
-    dcmThread = Thread(target=listen, args=(), daemon=True)
-    dcmThread.start()
+    t1 = Thread(target=listen, args=(), daemon=True)
+    t1.start()
+
+    tlt = time.localtime()
 
     # Open the log file
     log_dir = os.path.join(config['core']['log_dir'], 'adcs')
@@ -51,6 +66,38 @@ def on_startup():
     logfile = open(os.path.join(log_dir, filename + '.txt'), 'a+')
 
     log('RUN@' + '-'.join([str(x) for x in tlt[3:5]]))
+
+    # send("ANTENNAPOWER OFF")
+
+
+# I NEED TO KNOW WHAT NEEDS TO BE DONE IN NORMAL, LOW POWER, AND EMERGENCY MODES
+def enter_normal_mode():
+    # UPDATE GPS MODULE INTERNAL COORDINATES EVERY 10 MINUTES
+    # time.sleep(600)
+    pass
+
+
+def enter_low_power_mode():
+    # UPDATE GPS MODULE INTERNAL COORDINATES EVERY HOUR
+    # time.sleep(3600)
+    pass
+
+
+def enter_emergency_mode():
+    pass
+
+# TODO fix this
+def get_pry():
+    return (-1,-1,-1)
+
+def get_mag():
+    return (-1,-1,-1)
+
+def get_abs():
+    return (-1,-1,-1)
+
+def can_TJ_be_seen():
+    return True # fix me!
 
 # USE THIS LOG FUNCTION
 def log(msg):
