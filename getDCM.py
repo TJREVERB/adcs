@@ -38,24 +38,24 @@ def q2dcm(q):
 #    i = i*1.00
  # for i in sI:
 #    i = i*1.00
-  bV = np.matrix(bV)
-  sV = np.matrix(sV)
-  bI = np.matrix(bI)
-  sI = np.matrix(sI)
+def getDCM(bV, sV, bI, sI):
+  bV = np.matrix([bV])
+  sV = np.matrix([sV])
+  bI = np.matrix([bI])
+  sI = np.matrix([sI])
 
   bV = np.reshape(bV, (1,-1))/LA.norm(bV) #
   sV = np.reshape(sV, (1,-1))/LA.norm(sV)  #
   bI = np.reshape(bI, (1,-1))/LA.norm(bI)  #
   sI = np.reshape(sI, (1,-1))/LA.norm(sI)  #
 
-  vu2 = np.cross(bV, sV)
-  vu2 = LA.norm(vu2)
-  print (bV)
-  vmV = np.matrix(bV.getH(), vu2.getH(), np.cross(bV, vu2).getH()) #
-  iu2 = np.cross(bI, sI)
-  iu2 = LA.norm(iu2)
-  imV = np.matrix(bI.getH(), iu2.getH(), np.cross(bI, iu2).getH()) #
-  ivDCM = vmV*imV.getH()
+  vu2 = np.asmatrix(np.cross(bV, sV))
+  vu2 = np.asmatrix(vu2/LA.norm(vu2))
+  vmV = np.hstack((bV.getH(), vu2.getH(), np.asmatrix(np.cross(bV, vu2)).getH())) #
+  iu2 = np.asmatrix(np.cross(bI, sI))
+  iu2 = np.asmatrix(iu2/LA.norm(iu2))
+  imV = np.hstack((bI.getH(), iu2.getH(), np.asmatrix(np.cross(bI, iu2)).getH())) #
+  ivDCM = np.asmatrix(vmV)*np.asmatrix(imV).getH()
   return ivDCM
 
 # q = normalize([0.1 0.2 -0.3 1].getH())
