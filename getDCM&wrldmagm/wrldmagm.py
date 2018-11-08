@@ -364,10 +364,10 @@ def sun_vec(start_day):
     return sun_equ
 
 def getDCM(bV, sV, bI, sI):
-  bV = np.matrix([bV])
-  sV = np.matrix([sV])
-  bI = np.matrix([bI])
-  sI = np.matrix([sI])
+  bV = np.matrix(bV)
+  sV = np.matrix(sV)
+  bI = np.matrix(bI)
+  sI = np.matrix(sI)
 
   bV = np.reshape(bV, (1,-1))/LA.norm(bV) #
   sV = np.reshape(sV, (1,-1))/LA.norm(sV)  #
@@ -384,7 +384,7 @@ def getDCM(bV, sV, bI, sI):
   return ivDCM
 
 def testFunction(bV, sV, lat, long, alt, time):
-    sI = sun_vec(
+    sI = sun_vec(jdays)
     sI = q2dcm(qTrue)
     bI = wrldmagm(lat, long, alt, time)
     bV = pm.ecef2eci(bI)
