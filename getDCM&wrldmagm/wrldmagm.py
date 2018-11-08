@@ -1,6 +1,6 @@
 # geomag.py
 # by Christopher Weiss cmweiss@gmail.com
-# Modified by Bharath Dileepkumar, 11-01-2018
+# Modified by Bharath Dileepkumar, 11-08-2018
 
 # Adapted from the geomagc software and World Magnetic Model of the NOAA
 # Satellite and Information Service, National Geophysical Data Center
@@ -18,11 +18,12 @@
 
 import math, os, unittest
 import numpy as np
+import pymap3d as pm
 from datetime import date
 
 class wrldmagm:
 
-    def wrldmagm(self, dlat, dlon, h, time=date.today()): # latitude (decimal degrees), longitude (decimal degrees), altitude (feet), date
+    def wrldmagm(self, dlat, dlon, h, time): # latitude (decimal degrees), longitude (decimal degrees), altitude (feet), date
         #time = date('Y') + date('z')/365
         time = time.year+((time - date(time.year,1,1)).days/365.0)
         alt = h/3280.8399
@@ -313,3 +314,81 @@ class GeoMagTest(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+def q2dcm(q):
+    R = np.zeros((3,3))
+
+    R[0,0] = q[0]^2-q[1]^2-q[2]^2+q[3]^2
+    R[0,1] = 2*(q[0]*q[1]+q[2]*q[3])
+    R[0,2] = 2*(q[0]*q[2]-q[1]*q[3])
+
+    R[1,0] = 2*(q[0]*q[1]-q[2]*q[3])
+    R[1,1] = -q[0]^2+q[1]^2-q[2]^2+q[3]^2
+    R[1,2] = 2*(q[1]*q[2]+q[0]*q[3])
+
+    R[2,0] = 2*(q[0]*q[2]+q[1]*q[3])
+    R[2,1] = 2*(q[1]*q[2]-q[0]*q[3])
+    R[2,2] = -q[0]^2-q[1]^2+q[2]^2+q[3]^2
+
+    return R
+
+import math
+from math import pi
+from math import sin
+from math import cos
+def sun_vec(start_day):
+    # Julian days since Jan 0,1900
+    #  Reference for this calculation is JD 2,415,020 which
+    #  corresponds to 12:00:00 Jan 0,1900 ET (or 12:00:00 Dec 31,1899)
+    jd = 29224.5 + start_day
+    #  Mean longitude of sun, measured in the ecliptic from mean
+    #  equinox of date:
+    L = (279.696678 + 0.9856473354*jd + 2.267e-13*(jd**2))
+    #  Mean anomaly of sun in radians
+    Ms_r = (pi/180)*(358.475845 + 0.985600267*jd - (1.12e-13)*(jd**2) - (7e-20)*(jd**3))
+    #  Correction between mean longitude and true longitude
+    dL = 1.918*sin(Ms_r) + 0.02*sin(2*Ms_r)
+    #  True longitude of sun, in radians
+    L_sun = ((pi/180)*(L+dL))%(2*pi)
+    #  Compute sun unit vector in ECI frame, where the Earth's
+    #  equatorial plane is inclined inc_E radians to the ecliptic
+    #  R defines a rotation about the x-axis
+    inc_E = (pi/180)*(-23.45)
+    #R = [1,0,0; 0,cos(inc_E),sin(inc_E); 0,-sin(inc_E),cos(inc_E)];# [3,3] #CONVERT
+    #sun_ecl = [cos(L_sun);sin(L_sun);zeros(1,size(start_day,2))];  # [3,n]
+
+    R = np.array([[1,0,0],[0,cos(inc_E),sin(inc_E)],[0,-sin(inc_E),cos(inc_E)]],np.float32)
+    sun_ecl = np.array([[cos(L_sun)],[sin(L_sun)],[0]],np.float32)
+    #  Since R is constant through time, can do a simple matrix multiply
+    sun_equ = np.matmul(R,sun_ecl)   # [3,1]
+    return sun_equ
+
+def getDCM(bV, sV, bI, sI):
+  bV = np.matrix([bV])
+  sV = np.matrix([sV])
+  bI = np.matrix([bI])
+  sI = np.matrix([sI])
+
+  bV = np.reshape(bV, (1,-1))/LA.norm(bV) #
+  sV = np.reshape(sV, (1,-1))/LA.norm(sV)  #
+  bI = np.reshape(bI, (1,-1))/LA.norm(bI)  #
+  sI = np.reshape(sI, (1,-1))/LA.norm(sI)  #
+
+  vu2 = np.asmatrix(np.cross(bV, sV))
+  vu2 = np.asmatrix(vu2/LA.norm(vu2))
+  vmV = np.hstack((bV.getH(), vu2.getH(), np.asmatrix(np.cross(bV, vu2)).getH())) #
+  iu2 = np.asmatrix(np.cross(bI, sI))
+  iu2 = np.asmatrix(iu2/LA.norm(iu2))
+  imV = np.hstack((bI.getH(), iu2.getH(), np.asmatrix(np.cross(bI, iu2)).getH())) #
+  ivDCM = np.asmatrix(vmV)*np.asmatrix(imV).getH()
+  return ivDCM
+
+def testFunction(bV, sV, lat, long, alt, time):
+    sI = sun_vec(
+    sI = q2dcm(qTrue)
+    bI = wrldmagm(lat, long, alt, time)
+    bV = pm.ecef2eci(bI)
+    return getDCM(bV, sV, bI, sI)
+    
+    
+    
