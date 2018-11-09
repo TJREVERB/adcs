@@ -4,6 +4,11 @@ import time
 from subprocess import call
 from threading import Thread
 
+import numpy as np
+import math
+from math import floor, pi, sin, cos
+from datetime import datetime
+
 import pynmea2
 import serial
 
@@ -19,11 +24,17 @@ def send(msg):
 """""""""""""""""""""""
 MAIN METHODS
 """""""""""""""""""""""
-def epoch2jul(epoch):
-    if(len(epoch)==6)
-        sum=epoch[0]*365 + epoch[1]*30 + epoch[2] + int(round(24/epoch[3])) +
-        int(round(24*60/epoch[4])) + in
-    return 2458431
+def utc2jul(dt):
+    a = math.floor((14-dt.month)/12)
+    y = dt.year + 4800 - a
+    m = dt.month + 12*a - 3
+    jdn = dt.day + math.floor((153*m + 2)/5) + 365*y + math.floor(y/4) - \
+    math.floor(y/100) + math.floor(y/400) - 32045
+    jd = jdn + (dt.hour - 12) / 24 + dt.minute / 1440 + \
+    dt.second / 86400 - 2415020.5 #Subtracting dates since Jan 1, 1900
+    # + dt.microsecond / 86400000000
+    return jd
+
 
 """""""""""""""""""""""
 DRIVING METHODS
