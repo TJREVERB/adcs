@@ -110,7 +110,7 @@ def wrldmagm(self, dlat, dlon, h, time=date.today()):
     for n in range(1,self.maxord+1):
         ar = ar*aor
         m=0
-        D3=
+        D3=1
         D4=(n+m+1)
 
         while D4>0:
@@ -191,8 +191,28 @@ def wrldmagm(self, dlat, dlon, h, time=date.today()):
     olat = glat
     olon = glon
 
+    class RetObj:
+        pass
+    retobj = RetObj()
+    retobj.dec = dec
+    retobj.dip = dip
+    retobj.ti = ti
+    retobj.bh = bh
+    retobj.bx = bx
+    retobj.by = by
+    retobj.bz = bz
+    retobj.lat = dlat
+    retobj.lon = dlon
+    retobj.alt = h
+    retobj.time = time
+    retMag = np.matrix([retobj.bx, retobj.by, retobj.bz])
+    retMag = retMag.transpose()
+    #retFinal = np.matrix([retMag, retobj.bh, dec, retobj.dip, retobj.ti])
+    #return retobj
+    return retMag
+
 """""""""""""""""""""""
-DRIVING METHODS
+DRIVING THREAD
 """""""""""""""""""""""
 def listen():
     while True:
@@ -211,9 +231,12 @@ def listen():
         cartloc = np.array(cart[0], cart[1], cart[2])
         #Magnetic Field Model
         epochvec = jd2dvec(config['adcs']['sc']['jd0'])
-        lla = np.array(gps.lon gps.lat, gps.alt)
-        magECEF = wrldmagm(lla(3),lla(1),lla(2), \
+        lla = np.array(gps.lat, gps.lon, gps.alt) #If alt in meters, convert to feet
+        magECEF = wrldmagm(lla[0],lla[1],lla[2], \
         decyear('01-January-2018','dd-mm-yyyy'))
+
+
+        ########################################
         magECI = ecef2eci(magECEF, current_time)
         time.sleep(1);
 
