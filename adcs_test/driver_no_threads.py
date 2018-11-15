@@ -35,22 +35,25 @@ OUTPUT:
     -0.332382436188197  -0.147742971822997  -0.931500901980512
 """
 import numpy as np
-from numpy import linalg as LA
+from numpy import linalg
 
 import math, os, unittest
 
 import datetime
 from datetime import datetime, date
 
+from jdcal import gcal2jd, jd2gcal
+
+import time
+
 from orbital import earth, KeplerianElements, utilities
 from orbital.utilities import Position, Velocity
 
-from pymap3d import ecef2eci
+import pymap3d
 
-import yaml
-
-with open("config.yml.sample", 'r') as ymlfile:
-    config = yaml.load(ymlfile)
+#import yaml
+#with open("config.yml.sample", 'r') as ymlfile:
+#    config = yaml.load(ymlfile)
 #from core import config
 
 """""""""""""""""""""""
@@ -293,6 +296,90 @@ class wrldmagm:
         #retFinal = np.matrix([retMag, retobj.bh, dec, retobj.dip, retobj.ti])
         #return retobj
         return retMag
+    def __init__(self, wmm_filename=None):
+        if not wmm_filename:
+            wmm_filename = os.path.join(os.path.dirname(__file__), 'WMM.COF')
+        wmm=[]
+        with open(wmm_filename) as wmm_file:
+            for line in wmm_file:
+                linevals = line.strip().split()
+                if len(linevals) == 3:
+                    self.epoch = float(linevals[0])
+                    self.model = linevals[1]
+                    self.modeldate = linevals[2]
+                elif len(linevals) == 6:
+                    linedict = {'n': int(float(linevals[0])),
+                    'm': int(float(linevals[1])),
+                    'gnm': float(linevals[2]),
+                    'hnm': float(linevals[3]),
+                    'dgnm': float(linevals[4]),
+                    'dhnm': float(linevals[5])}
+                    wmm.append(linedict)
+
+        z = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
+        self.maxord = self.maxdeg = 12
+        self.tc = [z[0:13],z[0:13],z[0:13],z[0:13],z[0:13],z[0:13],z[0:13],z[0:13],z[0:13],z[0:13],z[0:13],z[0:13],z[0:13],z[0:13]]
+        self.sp = z[0:14]
+        self.cp = z[0:14]
+        self.cp[0] = 1.0
+        self.pp = z[0:13]
+        self.pp[0] = 1.0
+        self.p = [z[0:14],z[0:14],z[0:14],z[0:14],z[0:14],z[0:14],z[0:14],z[0:14],z[0:14],z[0:14],z[0:14],z[0:14],z[0:14],z[0:14]]
+        self.p[0][0] = 1.0
+        self.dp = [z[0:13],z[0:13],z[0:13],z[0:13],z[0:13],z[0:13],z[0:13],z[0:13],z[0:13],z[0:13],z[0:13],z[0:13],z[0:13],z[0:13]]
+        self.a = 6378.137
+        self.b = 6356.7523142
+        self.re = 6371.2
+        self.a2 = self.a*self.a
+        self.b2 = self.b*self.b
+        self.c2 = self.a2-self.b2
+        self.a4 = self.a2*self.a2
+        self.b4 = self.b2*self.b2
+        self.c4 = self.a4 - self.b4
+
+        self.c = [z[0:14],z[0:14],z[0:14],z[0:14],z[0:14],z[0:14],z[0:14],z[0:14],z[0:14],z[0:14],z[0:14],z[0:14],z[0:14],z[0:14]]
+        self.cd = [z[0:14],z[0:14],z[0:14],z[0:14],z[0:14],z[0:14],z[0:14],z[0:14],z[0:14],z[0:14],z[0:14],z[0:14],z[0:14],z[0:14]]
+
+        for wmmnm in wmm:
+            m = wmmnm['m']
+            n = wmmnm['n']
+            gnm = wmmnm['gnm']
+            hnm = wmmnm['hnm']
+            dgnm = wmmnm['dgnm']
+            dhnm = wmmnm['dhnm']
+            if (m <= n):
+                self.c[m][n] = gnm
+                self.cd[m][n] = dgnm
+                if (m != 0):
+                    self.c[n][m-1] = hnm
+                    self.cd[n][m-1] = dhnm
+
+        #/* CONVERT SCHMIDT NORMALIZED GAUSS COEFFICIENTS TO UNNORMALIZED */
+        self.snorm = [z[0:13],z[0:13],z[0:13],z[0:13],z[0:13],z[0:13],z[0:13],z[0:13],z[0:13],z[0:13],z[0:13],z[0:13],z[0:13]]
+        self.snorm[0][0] = 1.0
+        self.k = [z[0:13],z[0:13],z[0:13],z[0:13],z[0:13],z[0:13],z[0:13],z[0:13],z[0:13],z[0:13],z[0:13],z[0:13],z[0:13]]
+        self.k[1][1] = 0.0
+        self.fn = [0.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,11.0,12.0,13.0]
+        self.fm = [0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,11.0,12.0]
+        for n in range(1,self.maxord+1):
+            self.snorm[0][n] = self.snorm[0][n-1]*(2.0*n-1)/n
+            j=2.0
+            #for (m=0,D1=1,D2=(n-m+D1)/D1;D2>0;D2--,m+=D1):
+            m=0
+            D1=1
+            D2=(n-m+D1)/D1
+            while (D2 > 0):
+                self.k[m][n] = (((n-1)*(n-1))-(m*m))/((2.0*n-1)*(2.0*n-3.0))
+                if (m > 0):
+                    flnmj = ((n-m+1.0)*j)/(n+m)
+                    self.snorm[m][n] = self.snorm[m-1][n]*math.sqrt(flnmj)
+                    j = 1.0
+                    self.c[n][m-1] = self.snorm[m][n]*self.c[n][m-1]
+                    self.cd[n][m-1] = self.snorm[m][n]*self.cd[n][m-1]
+                self.c[m][n] = self.snorm[m][n]*self.c[m][n]
+                self.cd[m][n] = self.snorm[m][n]*self.cd[m][n]
+                D2=D2-1
+                m=m+D1
 
 def decyear(date):
     def sinceEpoch(date): # returns seconds since epoch
@@ -311,38 +398,58 @@ def decyear(date):
 def q2dcm(q):
     R = np.zeros((3,3))
 
-    R[0,0] = q[0]^2-q[1]^2-q[2]^2+q[3]^2
+    R[0,0] = q[0]**2-q[1]**2-q[2]**2+q[3]**2
     R[0,1] = 2*(q[0]*q[1]+q[2]*q[3])
     R[0,2] = 2*(q[0]*q[2]-q[1]*q[3])
 
     R[1,0] = 2*(q[0]*q[1]-q[2]*q[3])
-    R[1,1] = -q[0]^2+q[1]^2-q[2]^2+q[3]^2
+    R[1,1] = -q[0]**2+q[1]**2-q[2]**2+q[3]**2
     R[1,2] = 2*(q[1]*q[2]+q[0]*q[3])
 
     R[2,0] = 2*(q[0]*q[2]+q[1]*q[3])
     R[2,1] = 2*(q[1]*q[2]-q[0]*q[3])
-    R[2,2] = -q[0]^2-q[1]^2+q[2]^2+q[3]^2
+    R[2,2] = -q[0]**2-q[1]**2+q[2]**2+q[3]**2
 
     return R
 def getDCM(bV, sV, bI, sI):
-  bV = np.matrix([bV])
-  sV = np.matrix([sV])
-  bI = np.matrix([bI])
-  sI = np.matrix([sI])
+    bV = np.matrix([bV])
+    sV = np.matrix([sV])
+    bI = np.matrix([bI])
+    sI = np.matrix([sI])
 
-  bV = np.reshape(bV, (1,-1))/LA.norm(bV) #
-  sV = np.reshape(sV, (1,-1))/LA.norm(sV)  #
-  bI = np.reshape(bI, (1,-1))/LA.norm(bI)  #
-  sI = np.reshape(sI, (1,-1))/LA.norm(sI)  #
+    bV = np.reshape(bV, (1,-1))/LA.norm(bV) #
+    sV = np.reshape(sV, (1,-1))/LA.norm(sV)  #
+    bI = np.reshape(bI, (1,-1))/LA.norm(bI)  #
+    sI = np.reshape(sI, (1,-1))/LA.norm(sI)  #
 
-  vu2 = np.asmatrix(np.cross(bV, sV))
-  vu2 = np.asmatrix(vu2/LA.norm(vu2))
-  vmV = np.hstack((bV.getH(), vu2.getH(), np.asmatrix(np.cross(bV, vu2)).getH())) #
-  iu2 = np.asmatrix(np.cross(bI, sI))
-  iu2 = np.asmatrix(iu2/LA.norm(iu2))
-  imV = np.hstack((bI.getH(), iu2.getH(), np.asmatrix(np.cross(bI, iu2)).getH())) #
-  ivDCM = np.asmatrix(vmV)*np.asmatrix(imV).getH()
-  return ivDCM
+    vu2 = np.asmatrix(np.cross(bV, sV))
+    vu2 = np.asmatrix(vu2/LA.norm(vu2))
+    vmV = np.hstack((bV.getH(), vu2.getH(), np.asmatrix(np.cross(bV, vu2)).getH())) #
+    iu2 = np.asmatrix(np.cross(bI, sI))
+    iu2 = np.asmatrix(iu2/LA.norm(iu2))
+    imV = np.hstack((bI.getH(), iu2.getH(), np.asmatrix(np.cross(bI, iu2)).getH())) #
+    ivDCM = np.asmatrix(vmV)*np.asmatrix(imV).getH()
+    return ivDCM
+class KOE:
+    GM = 3.986004418*(10**14)
+    sma = 6778557 #meters
+    ecc = 0.0001973
+    incl = 51.6397*math.pi/180
+    raan = 115.7654*math.pi/180;
+    argp = 211.4532*math.pi/180
+    tran = 0*math.pi/180
+    """
+    #ISS KOE at an epoch of 2018/3/18 @ 12:00:00.000
+    sma = 6789165.94
+    ecc = 0.0018939
+    incl = 51.58923
+    raan = 349.09863 deg
+    argp = 55.38890 deg
+    tran = 318.52399 deg
+    """
+class sc:
+    jd0 = utc2jul(datetime(2018, 11, 8, 12, 0, 0))
+    inertia = np.diag([.0108, .0108, .0108])
 
 """""""""""""""""""""""
 DRIVING THREAD
@@ -350,49 +457,49 @@ DRIVING THREAD
 #def listen():
 #    while True:
 epoch = datetime(2018, 11, 8, 12, 0, 0)#datetime.utcnow()
-config['adcs']['sc']['jd0'] = utc2jul(epoch)
-config['adcs']['sc']['inertia'] = np.diag([.0108, .0108, .0108])
+sc.jd0 = utc2jul(epoch)
+sc.inertia = np.diag([.0108, .0108, .0108])
 
 #Orbital Properties
 GM = 3.986004418*(10**14)
-KOE = np.array(config['adcs']['KOE']['sma'], \
-config['adcs']['KOE']['ecc'], config['adcs']['KOE']['incl'], \
-config['adcs']['KOE']['argp'], config['adcs']['KOE']['tran'])
+KOE = np.array([KOE.sma, KOE.ecc, KOE.incl, KOE.raan, KOE.argp, KOE.tran])
 current_time = epoch
-epoch = np.array(epoch.year, epoch.month, epoch.day, epoch.hour, \
-epoch.minute, epoch.second)
+epoch = np.array([epoch.year, epoch.month, epoch.day, epoch.hour, \
+epoch.minute, epoch.second])
 cart = kep2cart(KOE)
-cartloc = np.array(cart[0], cart[1], cart[2])
+cartloc = np.array([cart[0,0], cart[0,1], cart[0,2]])
 
 #Magnetic Field Model
-epochvec = jd2dvec(config['adcs']['sc']['jd0'])
-lla = np.array(5.335745187657780, -1.348386750055788e+02, \
-3.968562753276266e+05*3.28084) # CONVERT METERS TO FEET
+epochvec = jd2dvec(sc.jd0)
+lla = np.array([5.335745187657780, -1.348386750055788e+02, \
+3.968562753276266e+05*3.28084]) # CONVERT METERS TO FEET
 #lla = np.array(gps.lat, gps.lon, gps.alt)
-magECEF = wrldmagm(lla[0],lla[1],lla[2], \
-decyear(datetime.datetime(2018, 1, 1)))
+gm = wrldmagm("WMM.COF")
+magECEF = gm.wrldmagm(lla[0],lla[1],lla[2], \
+decyear(datetime(2018, 1, 1)))
 magECEF = np.squeeze(np.asarray(magECEF))
 magECI = pymap3d.ecef2eci(magECEF, current_time)
 
 #Initial CubeSat Attitude
 #qtrue = [.5,.5,.5,.99];
 #qtrue = [0.5435   -0.0028   -0.6124   -0.5741];
-qtrue = np.matrix([0,0,sqrt(2)/2,sqrt(2)/2])
-qtrue = qtrue/normalize(qtrue)
+qtrue = np.matrix([0,0,math.sqrt(2)/2,math.sqrt(2)/2])
+qtrue = qtrue/np.linalg.norm(qtrue)
+qtrue = np.squeeze(np.asarray(qtrue))
 DCMtrue = q2dcm(qtrue)
 
 #Sensor Outputs
 #[magTotal,~] = BDipole(cart,sc.jd0,[0;0;0]);
 bI = 1.0*(10e-09) * magECI
-bI = bI/normalize(bI)
-sI = np.array(0.736594581345171,-0.321367778737346,0.595106018724694)
+bI = bI/np.linalg.norm(bI)
+sI = np.array([0.736594581345171,-0.321367778737346,0.595106018724694])
 #sI = sun_vec(config['adcs']['sc']['jd0']-utc2jul(datetime(1980,1,6,0,0,0)))
-sI = sI/normalize(sI)
-bV = np.array(0.593302194154829,-0.297353472232347,-0.748046401610510)
+sI = sI/np.linalg.norm(sI)
+bV = np.array([0.593302194154829,-0.297353472232347,-0.748046401610510])
 #bV = DCMtrue*bI
-bV = bV/norm(bV)
+bV = bV/np.linalg.norm(bV)
 sV = DCMtrue*sI
-sV = sV/norm(sV)
+sV = sV/np.linalg.norm(sV)
 
 print(sI)
 print(bV)
