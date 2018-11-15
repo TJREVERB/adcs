@@ -25,7 +25,7 @@ class wrldmagm:
 
     def wrldmagm(self, dlat, dlon, h, time): # latitude (decimal degrees), longitude (decimal degrees), altitude (feet), date
         #time = date('Y') + date('z')/365
-        time = time.year+((time - date(time.year,1,1)).days/365.0)
+        #time = time.year+((time - date(time.year,1,1)).days/365.0)
         alt = h/3280.8399
 
         otime = oalt = olat = olon = -1000.0
@@ -312,8 +312,8 @@ class GeoMagTest(unittest.TestCase):
     #         print(calcval)
     #         self.assertAlmostEqual(values[4], calcval.dec, 2, 'Expected %s, result %s' % (values[4], calcval.dec))
 
-if __name__ == '__main__':
-    unittest.main()
+#if __name__ == '__main__':
+#    unittest.main()
 
 def q2dcm(q):
     R = np.zeros((3,3))
@@ -363,6 +363,31 @@ def sun_vec(start_day):
     sun_equ = np.matmul(R,sun_ecl)   # [3,1]
     return sun_equ
 
+from math import floor
+"""
+https://github.com/dannyzed/julian/blob/master/julian/julian.py
+"""
+def utc2jul(dt):
+    a = math.floor((14-dt.month)/12)
+    y = dt.year + 4800 - a
+    m = dt.month + 12*a - 3
+    jdn = dt.day + math.floor((153*m + 2)/5) + 365*y + math.floor(y/4) - \
+    math.floor(y/100) + math.floor(y/400) - 32045
+    jd = jdn + (dt.hour - 12) / 24 + dt.minute / 1440 + \
+    dt.second / 86400 - 2415020.5 #Subtracting dates since Jan 1, 1900
+    # + dt.microsecond / 86400000000
+    return jd
+"""
+a = math.floor((14-epoch[1])/12)
+y = epoch[0] + 4800 - a
+m = epoch[1] + 12*a - 3
+jdn = epoch[2] + math.floor((153*m + 2)/5) + 365*y + math.floor(y/4) - \
+math.floor(y/100) + math.floor(y/400) - 32045
+jd = jdn + (epoch[3] - 12) / 24 + epoch[4] / 1440 + \
+epoch[5] / 86400 - 2415020.5 #Subtracting dates since Jan 1, 1900
+# + dt.microsecond / 86400000000
+"""
+
 def getDCM(bV, sV, bI, sI):
   bV = np.matrix(bV)
   sV = np.matrix(sV)
@@ -383,12 +408,39 @@ def getDCM(bV, sV, bI, sI):
   ivDCM = np.asmatrix(vmV)*np.asmatrix(imV).getH()
   return ivDCM
 
+def decyear(date):
+    def sinceEpoch(date): # returns seconds since epoch
+        return time.mktime(date.timetuple())
+    s = sinceEpoch
+
+    year = date.year
+    startOfThisYear = datetime(year=year, month=1, day=1)
+    startOfNextYear = datetime(year=year+1, month=1, day=1)
+
+    yearElapsed = s(date) - s(startOfThisYear)
+    yearDuration = s(startOfNextYear) - s(startOfThisYear)
+    fraction = yearElapsed/yearDuration
+
+    return date.year + fraction
+
 def testFunction(bV, sV, lat, long, alt, time):
+    jdays = utc2jul(time) - utc2jul(datetime.datetime(1900, 1, 1))
     sI = sun_vec(jdays)
-    sI = q2dcm(qTrue)
-    bI = wrldmagm(lat, long, alt, time)
+    gm = wrldmagm("WMM.COF")
+    bI = gm.wrldmagm(5.335745187657780, -1.348386750055788e+02, 3.968562753276266e+05, 	2018.8534)#temporary)
     bV = pm.ecef2eci(bI)
     return getDCM(bV, sV, bI, sI)
+
+import datetime
+def mainTester():
+    new_date = datetime.datetime(2018, 11, 8, 12, 0)
+    sV = np.matrix([0.736594581345171, -0.321367778737346, 0.595106018724694]).transpose()
+    bV = np.matrix([ 0.593302194154829, -0.297353472232347, -0.748046401610510]).transpose()
+    lat_deg = 5.335745187657780
+    lon_deg = -1.348386750055788e+02
+    alt_meter = 3.968562753276266e+05
+    return testFunction(bV, sV, lat_deg, lon_deg, alt_meter, new_date)
+
     
     
     
