@@ -71,16 +71,16 @@ def utc2jul(dt):
 def sun_vec(start_day):
     jd = start_day
     L = (279.696678 + 0.9856473354*jd + 2.267e-13*(jd**2))
-    Ms_r = (pi/180)*(358.475845 + 0.985600267*jd - (1.12e-13)*(jd**2) - \
+    Ms_r = (math.pi/180)*(358.475845 + 0.985600267*jd - (1.12e-13)*(jd**2) - \
     (7e-20)*(jd**3))
-    dL = 1.918*sin(Ms_r) + 0.02*sin(2*Ms_r)
-    L_sun = ((pi/180)*(L+dL))%(2*pi)
-    inc_E = (pi/180)*(-23.45)
+    dL = 1.918*math.sin(Ms_r) + 0.02*math.sin(2*Ms_r)
+    L_sun = ((math.pi/180)*(L+dL))%(2*math.pi)
+    inc_E = (math.pi/180)*(-23.45)
     #R = [1,0,0; 0,cos(inc_E),sin(inc_E); 0,-sin(inc_E),cos(inc_E)];# [3,3]
     #sun_ecl = [cos(L_sun);sin(L_sun);zeros(1,size(start_day,2))];  # [3,n]
-    R = np.array([[1,0,0],[0,cos(inc_E),sin(inc_E)], \
-    [0,-sin(inc_E),cos(inc_E)]],np.float32)
-    sun_ecl = np.array([[cos(L_sun)],[sin(L_sun)],[0]],np.float32)
+    R = np.array([[1,0,0],[0,math.cos(inc_E),math.sin(inc_E)], \
+    [0,-math.sin(inc_E),math.cos(inc_E)]],np.float32)
+    sun_ecl = np.array([[math.cos(L_sun)],[math.sin(L_sun)],[0]],np.float32)
     sun_equ = np.matmul(R,sun_ecl)   # [3,1]
     return sun_equ
 def kep2cart(KOE):
@@ -99,25 +99,6 @@ def jd2dvec(jd):
     epochvec[4] = minutes
     epochvec[5] = (epochvec[5]*60)
     return epochvec
-def getDCM(bV, sV, bI, sI):
-    bV = np.matrix([bV])
-    sV = np.matrix([sV])
-    bI = np.matrix([bI])
-    sI = np.matrix([sI])
-
-    bV = np.reshape(bV, (1,-1))/linalg.norm(bV) #
-    sV = np.reshape(sV, (1,-1))/linalg.norm(sV)  #
-    bI = np.reshape(bI, (1,-1))/linalg.norm(bI)  #
-    sI = np.reshape(sI, (1,-1))/linalg.norm(sI)  #
-
-    vu2 = np.asmatrix(np.cross(bV, sV))
-    vu2 = np.asmatrix(vu2/linalg.norm(vu2))
-    vmV = np.hstack((bV.getH(), vu2.getH(), np.asmatrix(np.cross(bV, vu2)).getH())) #
-    iu2 = np.asmatrix(np.cross(bI, sI))
-    iu2 = np.asmatrix(iu2/linalg.norm(iu2))
-    imV = np.hstack((bI.getH(), iu2.getH(), np.asmatrix(np.cross(bI, iu2)).getH())) #
-    ivDCM = np.asmatrix(vmV)*np.asmatrix(imV).getH()
-    return ivDCM
 
 class wrldmagm:
 
@@ -492,21 +473,34 @@ DCMtrue = q2dcm(qtrue)
 #[magTotal,~] = BDipole(cart,sc.jd0,[0;0;0]);
 bI = 1.0*(10e-09) * magECI
 bI = bI/np.linalg.norm(bI)
-sI = np.array([0.736594581345171,-0.321367778737346,0.595106018724694])
-#sI = sun_vec(config['adcs']['sc']['jd0']-utc2jul(datetime(1980,1,6,0,0,0)))
+sI = sun_vec(sc.jd0-utc2jul(datetime(1980,1,6,0,0,0)))
 sI = sI/np.linalg.norm(sI)
-bV = np.array([0.593302194154829,-0.297353472232347,-0.748046401610510])
-#bV = DCMtrue*bI
+bV = DCMtrue*bI
 bV = bV/np.linalg.norm(bV)
+print(bV)
+bV = np.squeeze(np.asarray(bV))
+print(bV)
 sV = DCMtrue*sI
 sV = sV/np.linalg.norm(sV)
+sV = np.squeeze(np.asarray(sV))
 
-print(sI)
-print(bV)
-print(sV)
+#Attitude properties
+dcm = getDCM(bV,sV,bI,sI)
+print(dcm)
+"""
+Still needs to be converted:
+"""
+"""
+q = dcm2q(dcm)
 
-        #Attitude properties
-        #dcm = getDCM(bV,sV,bI,sI)
-        #q = dcm2q(dcm) #CONVERT DCM2Q
-
+#Control Torque Calculation
+#qref = getqref(struct2array(KOE));
+qref = [0,0,-sqrt(2)/2,sqrt(2)/2];
+qerr = getqerr(q0,qref);
+thetaerr = getthetaerr(qerr);
+#ctcomm = -1*sim.gain*thetaerr-1*sim.rgain*(w0-sim.wref); #Expected control torque (row vector)
+ctcomm = -1*sim.gain*thetaerr;
+magdip = getMC(ctcomm',bV,sim.mmax,sim.mtrans); #Magnetic dipole in body frame
+ctprod = cross(magdip,bV);
+"""
         #time.sleep(1);
