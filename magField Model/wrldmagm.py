@@ -408,14 +408,15 @@ def getDCM(bV, sV, bI, sI):
   ivDCM = np.asmatrix(vmV)*np.asmatrix(imV).getH()
   return ivDCM
 
+import time
 def decyear(date):
     def sinceEpoch(date): # returns seconds since epoch
         return time.mktime(date.timetuple())
     s = sinceEpoch
 
     year = date.year
-    startOfThisYear = datetime(year=year, month=1, day=1)
-    startOfNextYear = datetime(year=year+1, month=1, day=1)
+    startOfThisYear = datetime.datetime(year=year, month=1, day=1)
+    startOfNextYear = datetime.datetime(year=year+1, month=1, day=1)
 
     yearElapsed = s(date) - s(startOfThisYear)
     yearDuration = s(startOfNextYear) - s(startOfThisYear)
@@ -427,8 +428,8 @@ def testFunction(bV, sV, lat, long, alt, time):
     jdays = utc2jul(time) - utc2jul(datetime.datetime(1900, 1, 1))
     sI = sun_vec(jdays)
     gm = wrldmagm("WMM.COF")
-    bI = gm.wrldmagm(5.335745187657780, -1.348386750055788e+02, 3.968562753276266e+05, 	2018.8534)#temporary)
-    bV = pm.ecef2eci(bI)
+    bI = gm.wrldmagm(5.335745187657780, -1.348386750055788e+02, 3.968562753276266e+05, decyear(time))
+    bV = pm.ecef2eci(bI, time)
     return getDCM(bV, sV, bI, sI)
 
 import datetime
