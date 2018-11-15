@@ -16,4 +16,4 @@ def decyear(date):
 
     return date.year + fraction
 
-print(decyear(datetime.datetime.today()))
+print(decyear(datetime.today()))
