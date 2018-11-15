@@ -18,6 +18,7 @@
 
 import math, os, unittest
 import numpy as np
+from numpy import linalg
 import pymap3d as pm
 from datetime import date
 
@@ -394,16 +395,16 @@ def getDCM(bV, sV, bI, sI):
   bI = np.matrix(bI)
   sI = np.matrix(sI)
 
-  bV = np.reshape(bV, (1,-1))/LA.norm(bV) #
-  sV = np.reshape(sV, (1,-1))/LA.norm(sV)  #
-  bI = np.reshape(bI, (1,-1))/LA.norm(bI)  #
-  sI = np.reshape(sI, (1,-1))/LA.norm(sI)  #
+  bV = np.reshape(bV, (1,-1))/linalg.norm(bV) #
+  sV = np.reshape(sV, (1,-1))/linalg.norm(sV)  #
+  bI = np.reshape(bI, (1,-1))/linalg.norm(bI)  #
+  sI = np.reshape(sI, (1,-1))/linalg.norm(sI)  #
 
   vu2 = np.asmatrix(np.cross(bV, sV))
-  vu2 = np.asmatrix(vu2/LA.norm(vu2))
+  vu2 = np.asmatrix(vu2/linalg.norm(vu2))
   vmV = np.hstack((bV.getH(), vu2.getH(), np.asmatrix(np.cross(bV, vu2)).getH())) #
   iu2 = np.asmatrix(np.cross(bI, sI))
-  iu2 = np.asmatrix(iu2/LA.norm(iu2))
+  iu2 = np.asmatrix(iu2/linalg.norm(iu2))
   imV = np.hstack((bI.getH(), iu2.getH(), np.asmatrix(np.cross(bI, iu2)).getH())) #
   ivDCM = np.asmatrix(vmV)*np.asmatrix(imV).getH()
   return ivDCM
@@ -429,12 +430,13 @@ def testFunction(bV, sV, lat, long, alt, time):
     sI = sun_vec(jdays)
     gm = wrldmagm("WMM.COF")
     bI = gm.wrldmagm(5.335745187657780, -1.348386750055788e+02, 3.968562753276266e+05, decyear(time))
+    bI = np.squeeze(np.asarray(bI))
     bV = pm.ecef2eci(bI, time)
     return getDCM(bV, sV, bI, sI)
 
 import datetime
 def mainTester():
-    new_date = datetime.datetime(2018, 11, 8, 12, 0)
+    new_date = datetime.datetime(2018, 11, 8, 12, 0, 0)
     sV = np.matrix([0.736594581345171, -0.321367778737346, 0.595106018724694]).transpose()
     bV = np.matrix([ 0.593302194154829, -0.297353472232347, -0.748046401610510]).transpose()
     lat_deg = 5.335745187657780
@@ -442,6 +444,4 @@ def mainTester():
     alt_meter = 3.968562753276266e+05
     return testFunction(bV, sV, lat_deg, lon_deg, alt_meter, new_date)
 
-    
-    
-    
+print(mainTester())

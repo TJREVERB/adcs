@@ -2,7 +2,7 @@
 # October 30th, 2018
 
 
-from numpy import linalg as LA
+from numpy import linalg
 import numpy as np
 
 #print getDCM([1,2,3,4], [1,2,3,4], [1,2,3,4], [1,2,3,4])
@@ -44,16 +44,16 @@ def getDCM(bV, sV, bI, sI):
   bI = np.matrix([bI])
   sI = np.matrix([sI])
 
-  bV = np.reshape(bV, (1,-1))/LA.norm(bV) #
-  sV = np.reshape(sV, (1,-1))/LA.norm(sV)  #
-  bI = np.reshape(bI, (1,-1))/LA.norm(bI)  #
-  sI = np.reshape(sI, (1,-1))/LA.norm(sI)  #
+  bV = np.reshape(bV, (1,-1))/linalg.norm(bV) #
+  sV = np.reshape(sV, (1,-1))/linalg.norm(sV)  #
+  bI = np.reshape(bI, (1,-1))/linalg.norm(bI)  #
+  sI = np.reshape(sI, (1,-1))/linalg.norm(sI)  #
 
   vu2 = np.asmatrix(np.cross(bV, sV))
-  vu2 = np.asmatrix(vu2/LA.norm(vu2))
+  vu2 = np.asmatrix(vu2/linalg.norm(vu2))
   vmV = np.hstack((bV.getH(), vu2.getH(), np.asmatrix(np.cross(bV, vu2)).getH())) #
   iu2 = np.asmatrix(np.cross(bI, sI))
-  iu2 = np.asmatrix(iu2/LA.norm(iu2))
+  iu2 = np.asmatrix(iu2/linalg.norm(iu2))
   imV = np.hstack((bI.getH(), iu2.getH(), np.asmatrix(np.cross(bI, iu2)).getH())) #
   ivDCM = np.asmatrix(vmV)*np.asmatrix(imV).getH()
   return ivDCM

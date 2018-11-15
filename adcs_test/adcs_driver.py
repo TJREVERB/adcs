@@ -68,149 +68,204 @@ def jd2dvec(jd):
     epochvec[4] = minutes
     epochvec[5] = (epochvec[5]*60)
     return epochvec
-def wrldmagm(self, dlat, dlon, h, time=date.today()):
-    time = time.year+((time - date(time.year,1,1)).days/365.0)
-    alt = h/3280.8399
+def getDCM(bV, sV, bI, sI):
+    bV = np.matrix([bV])
+    sV = np.matrix([sV])
+    bI = np.matrix([bI])
+    sI = np.matrix([sI])
 
-    otime = oalt = olat = olon = -1000.0
+    bV = np.reshape(bV, (1,-1))/linalg.norm(bV) #
+    sV = np.reshape(sV, (1,-1))/linalg.norm(sV)  #
+    bI = np.reshape(bI, (1,-1))/linalg.norm(bI)  #
+    sI = np.reshape(sI, (1,-1))/linalg.norm(sI)  #
 
-    dt = time - self.epoch
-    glat = dlat
-    glon = dlon
-    rlat = math.radians(glat)
-    rlon = math.radians(glon)
-    srlon = math.sin(rlon)
-    srlat = math.sin(rlat)
-    crlon = math.cos(rlon)
-    crlat = math.cos(rlat)
-    srlat2 = srlat*srlat
-    crlat2 = crlat*crlat
-    self.sp[1] = srlon
-    self.cp[1] = crlon
+    vu2 = np.asmatrix(np.cross(bV, sV))
+    vu2 = np.asmatrix(vu2/linalg.norm(vu2))
+    vmV = np.hstack((bV.getH(), vu2.getH(), np.asmatrix(np.cross(bV, vu2)).getH())) #
+    iu2 = np.asmatrix(np.cross(bI, sI))
+    iu2 = np.asmatrix(iu2/linalg.norm(iu2))
+    imV = np.hstack((bI.getH(), iu2.getH(), np.asmatrix(np.cross(bI, iu2)).getH())) #
+    ivDCM = np.asmatrix(vmV)*np.asmatrix(imV).getH()
+    return ivDCM
 
-    if (alt != oalt or glat != olat):
-        q = math.sqrt(self.a2-self.c2*srlat2)
-        q1 = alt*q
-        q2 = ((q1+self.a2)/(q1+self.b2))*((q1+self.a2)/(q1+self.b2))
-        ct = srlat/math.sqrt(q2*crlat2+srlat2)
-        st = math.sqrt(1.0-(ct*ct))
-        r2 = (alt*alt)+2.0*q1+(self.a4-self.c4*srlat2)/(q*q)
-        r = math.sqrt(r2)
-        d = math.sqrt(self.a2*crlat2+self.b2*srlat2)
-        ca = (alt+d)/r
-        sa = self.c2*crlat*srlat/(r*d)
+class wrldmagm:
 
-    if (glon != olon):
-        for m in range(2,self.maxord+1):
-            self.sp[m] = self.sp[1]*self.cp[m-1]+self.cp[1]*self.sp[m-1]
-            self.cp[m] = self.cp[1]*self.cp[m-1]-self.sp[1]*self.sp[m-1]
+    def wrldmagm(self, dlat, dlon, h, time): # latitude (decimal degrees), longitude (decimal degrees), altitude (feet), date
+        #time = date('Y') + date('z')/365
+        #time = time.year+((time - date(time.year,1,1)).days/365.0)
+        alt = h/3280.8399
 
-    aor = self.re/r
-    ar = aor*aor
-    br = bt = bp = bpp = 0.0
-    for n in range(1,self.maxord+1):
-        ar = ar*aor
-        m=0
-        D3=1
-        D4=(n+m+1)
+        otime = oalt = olat = olon = -1000.0
 
-        while D4>0:
-            if (alt != oalt or glat != olat):
-                if (n == m):
-                    self.p[m][n] = st * self.p[m-1][n-1]
-                    self.dp[m][n] = st*self.dp[m-1][n-1]+ct*self.p[m-1][n-1]
+        dt = time - self.epoch
+        glat = dlat
+        glon = dlon
+        rlat = math.radians(glat)
+        rlon = math.radians(glon)
+        srlon = math.sin(rlon)
+        srlat = math.sin(rlat)
+        crlon = math.cos(rlon)
+        crlat = math.cos(rlat)
+        srlat2 = srlat*srlat
+        crlat2 = crlat*crlat
+        self.sp[1] = srlon
+        self.cp[1] = crlon
 
-                elif (n == 1 and m == 0):
-                    self.p[m][n] = ct*self.p[m][n-1]
-                    self.dp[m][n] = ct*self.dp[m][n-1]-st*self.p[m][n-1]
+        #/* CONVERT FROM GEODETIC COORDS. TO SPHERICAL COORDS. */
+        if (alt != oalt or glat != olat):
+            q = math.sqrt(self.a2-self.c2*srlat2)
+            q1 = alt*q
+            q2 = ((q1+self.a2)/(q1+self.b2))*((q1+self.a2)/(q1+self.b2))
+            ct = srlat/math.sqrt(q2*crlat2+srlat2)
+            st = math.sqrt(1.0-(ct*ct))
+            r2 = (alt*alt)+2.0*q1+(self.a4-self.c4*srlat2)/(q*q)
+            r = math.sqrt(r2)
+            d = math.sqrt(self.a2*crlat2+self.b2*srlat2)
+            ca = (alt+d)/r
+            sa = self.c2*crlat*srlat/(r*d)
 
-                elif (n > 1 and n != m):
-                    if (m > n-2):
-                        self.p[m][n-2] = 0
-                    if (m > n-2):
-                        self.dp[m][n-2] = 0.0
-                    self.p[m][n] = ct*self.p[m][n-1]-self.k[m][n]*self.p[m][n-2]
-                    self.dp[m][n] = ct*self.dp[m][n-1] - st*self.p[m][n-1]-self.k[m][n]*self.dp[m][n-2]
+        if (glon != olon):
+            for m in range(2,self.maxord+1):
+                self.sp[m] = self.sp[1]*self.cp[m-1]+self.cp[1]*self.sp[m-1]
+                self.cp[m] = self.cp[1]*self.cp[m-1]-self.sp[1]*self.sp[m-1]
 
-            if (time != otime):
-                self.tc[m][n] = self.c[m][n]+dt*self.cd[m][n]
-                if (m != 0):
-                    self.tc[n][m-1] = self.c[n][m-1]+dt*self.cd[n][m-1]
-            par = ar*self.p[m][n]
+        aor = self.re/r
+        ar = aor*aor
+        br = bt = bp = bpp = 0.0
+        for n in range(1,self.maxord+1):
+            ar = ar*aor
 
-            if (m == 0):
-                temp1 = self.tc[m][n]*self.cp[m]
-                temp2 = self.tc[m][n]*self.sp[m]
-            else:
-                temp1 = self.tc[m][n]*self.cp[m]+self.tc[n][m-1]*self.sp[m]
-                temp2 = self.tc[m][n]*self.sp[m]-self.tc[n][m-1]*self.cp[m]
+            #for (m=0,D3=1,D4=(n+m+D3)/D3;D4>0;D4--,m+=D3):
+            m=0
+            D3=1
+            #D4=(n+m+D3)/D3
+            D4=(n+m+1)
+            while D4>0:
 
-            bt = bt-ar*temp1*self.dp[m][n]
-            bp = bp + (self.fm[m] * temp2 * par)
-            br = br + (self.fn[n] * temp1 * par)
+        # /*
+                # COMPUTE UNNORMALIZED ASSOCIATED LEGENDRE POLYNOMIALS
+                # AND DERIVATIVES VIA RECURSION RELATIONS
+        # */
+                if (alt != oalt or glat != olat):
+                    if (n == m):
+                        self.p[m][n] = st * self.p[m-1][n-1]
+                        self.dp[m][n] = st*self.dp[m-1][n-1]+ct*self.p[m-1][n-1]
 
-            if (st == 0.0 and m == 1):
-                if (n == 1):
-                    self.pp[n] = self.pp[n-1]
+                    elif (n == 1 and m == 0):
+                        self.p[m][n] = ct*self.p[m][n-1]
+                        self.dp[m][n] = ct*self.dp[m][n-1]-st*self.p[m][n-1]
+
+                    elif (n > 1 and n != m):
+                        if (m > n-2):
+                            self.p[m][n-2] = 0
+                        if (m > n-2):
+                            self.dp[m][n-2] = 0.0
+                        self.p[m][n] = ct*self.p[m][n-1]-self.k[m][n]*self.p[m][n-2]
+                        self.dp[m][n] = ct*self.dp[m][n-1] - st*self.p[m][n-1]-self.k[m][n]*self.dp[m][n-2]
+
+        # /*
+                # TIME ADJUST THE GAUSS COEFFICIENTS
+        # */
+                if (time != otime):
+                    self.tc[m][n] = self.c[m][n]+dt*self.cd[m][n]
+                    if (m != 0):
+                        self.tc[n][m-1] = self.c[n][m-1]+dt*self.cd[n][m-1]
+
+        # /*
+                # ACCUMULATE TERMS OF THE SPHERICAL HARMONIC EXPANSIONS
+        # */
+                par = ar*self.p[m][n]
+
+                if (m == 0):
+                    temp1 = self.tc[m][n]*self.cp[m]
+                    temp2 = self.tc[m][n]*self.sp[m]
                 else:
-                    self.pp[n] = ct*self.pp[n-1]-self.k[m][n]*self.pp[n-2]
-                parp = ar*self.pp[n]
-                bpp = bpp + (self.fm[m]*temp2*parp)
-            D4=D4-1
-            m=m+1
-    if (st == 0.0):
-        bp = bpp
-    else:
-        bp = bp/st
+                    temp1 = self.tc[m][n]*self.cp[m]+self.tc[n][m-1]*self.sp[m]
+                    temp2 = self.tc[m][n]*self.sp[m]-self.tc[n][m-1]*self.cp[m]
 
-    bx = -bt*ca-br*sa
-    by = bp
-    bz = bt*sa-br*ca
+                bt = bt-ar*temp1*self.dp[m][n]
+                bp = bp + (self.fm[m] * temp2 * par)
+                br = br + (self.fn[n] * temp1 * par)
+        # /*
+                    # SPECIAL CASE:  NORTH/SOUTH GEOGRAPHIC POLES
+        # */
+                if (st == 0.0 and m == 1):
+                    if (n == 1):
+                        self.pp[n] = self.pp[n-1]
+                    else:
+                        self.pp[n] = ct*self.pp[n-1]-self.k[m][n]*self.pp[n-2]
+                    parp = ar*self.pp[n]
+                    bpp = bpp + (self.fm[m]*temp2*parp)
 
-    bh = math.sqrt((bx*bx)+(by*by))
-    ti = math.sqrt((bh*bh)+(bz*bz))
-    dec = math.degrees(math.atan2(by,bx))
-    dip = math.degrees(math.atan2(bz,bh))
+                D4=D4-1
+                m=m+1
 
-    gv = -999.0
-    if (math.fabs(glat) >= 55.):
-        if (glat > 0.0 and glon >= 0.0):
-            gv = dec-glon
-        if (glat > 0.0 and glon < 0.0):
-            gv = dec+math.fabs(glon);
-        if (glat < 0.0 and glon >= 0.0):
-            gv = dec+glon
-        if (glat < 0.0 and glon < 0.0):
-            gv = dec-math.fabs(glon)
-        if (gv > +180.0):
-            gv = gv - 360.0
-        if (gv < -180.0):
-            gv = gv + 360.0
+        if (st == 0.0):
+            bp = bpp
+        else:
+            bp = bp/st
+        # /*
+            # ROTATE MAGNETIC VECTOR COMPONENTS FROM SPHERICAL TO
+            # GEODETIC COORDINATES
+        # */
+        bx = -bt*ca-br*sa
+        by = bp
+        bz = bt*sa-br*ca
+        # /*
+            # COMPUTE DECLINATION (DEC), INCLINATION (DIP) AND
+            # TOTAL INTENSITY (TI)
+        # */
+        bh = math.sqrt((bx*bx)+(by*by))
+        ti = math.sqrt((bh*bh)+(bz*bz))
+        dec = math.degrees(math.atan2(by,bx))
+        dip = math.degrees(math.atan2(bz,bh))
+        # /*
+            # COMPUTE MAGNETIC GRID VARIATION IF THE CURRENT
+            # GEODETIC POSITION IS IN THE ARCTIC OR ANTARCTIC
+            # (I.E. GLAT > +55 DEGREES OR GLAT < -55 DEGREES)
 
-    otime = time
-    oalt = alt
-    olat = glat
-    olon = glon
+            # OTHERWISE, SET MAGNETIC GRID VARIATION TO -999.0
+        # */
+        gv = -999.0
+        if (math.fabs(glat) >= 55.):
+            if (glat > 0.0 and glon >= 0.0):
+                gv = dec-glon
+            if (glat > 0.0 and glon < 0.0):
+                gv = dec+math.fabs(glon);
+            if (glat < 0.0 and glon >= 0.0):
+                gv = dec+glon
+            if (glat < 0.0 and glon < 0.0):
+                gv = dec-math.fabs(glon)
+            if (gv > +180.0):
+                gv = gv - 360.0
+            if (gv < -180.0):
+                gv = gv + 360.0
 
-    class RetObj:
-        pass
-    retobj = RetObj()
-    retobj.dec = dec
-    retobj.dip = dip
-    retobj.ti = ti
-    retobj.bh = bh
-    retobj.bx = bx
-    retobj.by = by
-    retobj.bz = bz
-    retobj.lat = dlat
-    retobj.lon = dlon
-    retobj.alt = h
-    retobj.time = time
-    retMag = np.matrix([retobj.bx, retobj.by, retobj.bz])
-    retMag = retMag.transpose()
-    #retFinal = np.matrix([retMag, retobj.bh, dec, retobj.dip, retobj.ti])
-    #return retobj
-    return retMag
+        otime = time
+        oalt = alt
+        olat = glat
+        olon = glon
+
+        class RetObj:
+            pass
+        retobj = RetObj()
+        retobj.dec = dec
+        retobj.dip = dip
+        retobj.ti = ti
+        retobj.bh = bh
+        retobj.bx = bx
+        retobj.by = by
+        retobj.bz = bz
+        retobj.lat = dlat
+        retobj.lon = dlon
+        retobj.alt = h
+        retobj.time = time
+        retMag = np.matrix([retobj.bx, retobj.by, retobj.bz])
+        retMag = retMag.transpose()
+        #retFinal = np.matrix([retMag, retobj.bh, dec, retobj.dip, retobj.ti])
+        #return retobj
+        return retMag
+
 def decyear(date):
     def sinceEpoch(date): # returns seconds since epoch
         return time.mktime(date.timetuple())
@@ -286,7 +341,8 @@ def listen():
         lla = np.array(gps.lat, gps.lon, gps.alt) #If alt in meters, convert to feet
         magECEF = wrldmagm(lla[0],lla[1],lla[2], \
         decyear(datetime.datetime(2018, 1, 1)))
-        magECI = ecef2eci(magECEF, current_time)
+        magECEF = np.squeeze(np.asarray(magECEF))
+        magECI = pymap3d.ecef2eci(magECEF, current_time)
 
         #Initial CubeSat Attitude
         #qtrue = [.5,.5,.5,.99];
@@ -307,8 +363,8 @@ def listen():
         sV = sV/norm(sV)
 
         #Attitude properties
-        dcm = getDCM(bV,sV,bI,sI)
-        q = dcm2q(dcm)
+        #dcm = getDCM(bV,sV,bI,sI)
+        #q = dcm2q(dcm)
         """
         CONVERT DCM2Q
         """
