@@ -5,8 +5,9 @@ from subprocess import call
 from threading import Thread
 
 import numpy as np
+from numpy import linalg as LA
 import math
-from math import floor, pi, sin, cos, pi, radians
+from math import floor, pi, sin, cos, pi, radians, norm
 from datetime import datetime, utcnow, date
 from orbital import earth, KeplerianElements, utilities
 from orbital.utilities import Position, Velocity
@@ -210,6 +211,55 @@ def wrldmagm(self, dlat, dlon, h, time=date.today()):
     #retFinal = np.matrix([retMag, retobj.bh, dec, retobj.dip, retobj.ti])
     #return retobj
     return retMag
+def decyear(date):
+    def sinceEpoch(date): # returns seconds since epoch
+        return time.mktime(date.timetuple())
+    s = sinceEpoch
+
+    year = date.year
+    startOfThisYear = datetime(year=year, month=1, day=1)
+    startOfNextYear = datetime(year=year+1, month=1, day=1)
+
+    yearElapsed = s(date) - s(startOfThisYear)
+    yearDuration = s(startOfNextYear) - s(startOfThisYear)
+    fraction = yearElapsed/yearDuration
+
+    return date.year + fraction
+def q2dcm(q):
+    R = np.zeros((3,3))
+
+    R[0,0] = q[0]^2-q[1]^2-q[2]^2+q[3]^2
+    R[0,1] = 2*(q[0]*q[1]+q[2]*q[3])
+    R[0,2] = 2*(q[0]*q[2]-q[1]*q[3])
+
+    R[1,0] = 2*(q[0]*q[1]-q[2]*q[3])
+    R[1,1] = -q[0]^2+q[1]^2-q[2]^2+q[3]^2
+    R[1,2] = 2*(q[1]*q[2]+q[0]*q[3])
+
+    R[2,0] = 2*(q[0]*q[2]+q[1]*q[3])
+    R[2,1] = 2*(q[1]*q[2]-q[0]*q[3])
+    R[2,2] = -q[0]^2-q[1]^2+q[2]^2+q[3]^2
+
+    return R
+def getDCM(bV, sV, bI, sI):
+  bV = np.matrix([bV])
+  sV = np.matrix([sV])
+  bI = np.matrix([bI])
+  sI = np.matrix([sI])
+
+  bV = np.reshape(bV, (1,-1))/LA.norm(bV) #
+  sV = np.reshape(sV, (1,-1))/LA.norm(sV)  #
+  bI = np.reshape(bI, (1,-1))/LA.norm(bI)  #
+  sI = np.reshape(sI, (1,-1))/LA.norm(sI)  #
+
+  vu2 = np.asmatrix(np.cross(bV, sV))
+  vu2 = np.asmatrix(vu2/LA.norm(vu2))
+  vmV = np.hstack((bV.getH(), vu2.getH(), np.asmatrix(np.cross(bV, vu2)).getH())) #
+  iu2 = np.asmatrix(np.cross(bI, sI))
+  iu2 = np.asmatrix(iu2/LA.norm(iu2))
+  imV = np.hstack((bI.getH(), iu2.getH(), np.asmatrix(np.cross(bI, iu2)).getH())) #
+  ivDCM = np.asmatrix(vmV)*np.asmatrix(imV).getH()
+  return ivDCM
 
 """""""""""""""""""""""
 DRIVING THREAD
@@ -219,6 +269,7 @@ def listen():
         epoch = datetime.utcnow()
         config['adcs']['sc']['jd0'] = utc2jul(epoch)
         config['adcs']['sc']['inertia'] = np.diag([.0108, .0108, .0108])
+
         #Orbital Properties
         GM = 3.986004418*(10**14)
         KOE = np.array(config['adcs']['KOE']['sma'], \
@@ -229,15 +280,39 @@ def listen():
         epoch.minute, epoch.second)
         cart = kep2cart(KOE)
         cartloc = np.array(cart[0], cart[1], cart[2])
+
         #Magnetic Field Model
         epochvec = jd2dvec(config['adcs']['sc']['jd0'])
         lla = np.array(gps.lat, gps.lon, gps.alt) #If alt in meters, convert to feet
         magECEF = wrldmagm(lla[0],lla[1],lla[2], \
-        decyear('01-January-2018','dd-mm-yyyy'))
-
-
-        ########################################
+        decyear(datetime.datetime(2018, 1, 1)))
         magECI = ecef2eci(magECEF, current_time)
+
+        #Initial CubeSat Attitude
+        #qtrue = [.5,.5,.5,.99];
+        #qtrue = [0.5435   -0.0028   -0.6124   -0.5741];
+        qtrue = np.matrix([0,0,sqrt(2)/2,sqrt(2)/2])
+        qtrue = qtrue/normalize(qtrue)
+        DCMtrue = q2dcm(qtrue)
+
+        #Sensor Outputs
+        #[magTotal,~] = BDipole(cart,sc.jd0,[0;0;0]);
+        bI = 1.0*(10**(-09)) * magECI
+        bI = bI/normalize(bI)
+        sI = sun_vec(config['adcs']['sc']['jd0']-juliandate([1980,1,6]))
+        sI = sI/normalize(sI)
+        bV = DCMtrue*bI
+        bV = bV/norm(bV)
+        sV = DCMtrue*sI
+        sV = sV/norm(sV)
+
+        #Attitude properties
+        dcm = getDCM(bV,sV,bI,sI)
+        q = dcm2q(dcm)
+        """
+        CONVERT DCM2Q
+        """
+
         time.sleep(1);
 
 def updateVals(msg):

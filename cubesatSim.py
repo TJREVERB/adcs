@@ -33,7 +33,7 @@ def cubesatSim():
     eci2ecef = dcmeci2ecef('IAU-2000/2006',epochvec) #needs to be written
     ecef2eci = eci2ecef.getH()
     magECEF = wrldmagm(lla(3),lla(1),lla(2),decyear('01-January-2018','dd-mm-yyyy'))
-    magECI = ecef2eci*magECEF
+    magECI = pymap3d.ecef2eci(magECEF)
 
     #Initial CubeSat Attitude
     #qtrue = [.5,.5,.5,.99];
