@@ -14,6 +14,7 @@
 #
 #  Reference: J.R. Wertz, p 141
 # Bryan Zhang 10/11/2018
+# Edited by Bharath Dileepkumar, 11/19/18
 
 import numpy as np
 import math
@@ -21,9 +22,10 @@ from math import pi
 from math import sin
 from math import cos
 def sun_vec(start_day):
-    # Julian days since Jan 0,1900
+    # Exact julian date
     #  Reference for this calculation is JD 2,415,020 which
     #  corresponds to 12:00:00 Jan 0,1900 ET (or 12:00:00 Dec 31,1899)
+    start_day = start_day - 2415020.5
     jd = 29224.5 + start_day
     #  Mean longitude of sun, measured in the ecliptic from mean
     #  equinox of date:

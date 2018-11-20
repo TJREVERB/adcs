@@ -1,6 +1,6 @@
 # geomag.py
 # by Christopher Weiss cmweiss@gmail.com
-# Modified by Bharath Dileepkumar, 11-08-2018
+# Modified by Bharath Dileepkumar, 11-16-2018
 
 # Adapted from the geomagc software and World Magnetic Model of the NOAA
 # Satellite and Information Service, National Geophysical Data Center

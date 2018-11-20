@@ -40,9 +40,9 @@ def q2dcm(q):
 #    i = i*1.00
 def getDCM(bV, sV, bI, sI):
   bV = np.matrix([bV])
-  sV = np.matrix([sV])
+  #sV = np.matrix([sV])
   bI = np.matrix([bI])
-  sI = np.matrix([sI])
+  #sI = np.matrix([sI])
 
   bV = np.reshape(bV, (1,-1))/linalg.norm(bV) #
   sV = np.reshape(sV, (1,-1))/linalg.norm(sV)  #
