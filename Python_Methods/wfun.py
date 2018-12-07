@@ -4,6 +4,7 @@
 #  torque = total amount of torque on CubeSat
 #  sc = Struct describing CubeSat
 # inertia method needs to be written, use numpy to find derivative in numpy
+import numpy as np
 def wfun(t,w0, torque, sc):
   dwdt = wfun(t,w0, torque, sc)
   w0=np.reshape(w0, (1,-1))
