@@ -17,7 +17,6 @@ Created by Jason Chen 10/18/19
 """
 import numpy as np
 import math
-from math import radians
 
 def BDipole(*args):
     if(len(args) < 2):
