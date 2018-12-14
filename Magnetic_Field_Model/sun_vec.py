@@ -25,7 +25,6 @@ def sun_vec(start_day):
     # Exact julian date
     #  Reference for this calculation is JD 2,415,020 which
     #  corresponds to 12:00:00 Jan 0,1900 ET (or 12:00:00 Dec 31,1899)
-    start_day = start_day - 2415020.5
     jd = 29224.5 + start_day
     #  Mean longitude of sun, measured in the ecliptic from mean
     #  equinox of date:

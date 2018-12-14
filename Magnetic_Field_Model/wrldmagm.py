@@ -1,6 +1,6 @@
 # geomag.py
 # by Christopher Weiss cmweiss@gmail.com
-# Modified by Bharath Dileepkumar, 11-16-2018
+# Modified by Bharath Dileepkumar, 12-13-2018
 
 # Adapted from the geomagc software and World Magnetic Model of the NOAA
 # Satellite and Information Service, National Geophysical Data Center
@@ -27,7 +27,7 @@ class wrldmagm:
     def wrldmagm(self, dlat, dlon, h, time): # latitude (decimal degrees), longitude (decimal degrees), altitude (feet), date
         #time = date('Y') + date('z')/365
         #time = time.year+((time - date(time.year,1,1)).days/365.0)
-        alt = h/3280.8399
+        alt = h/3280.8399*3.28084
 
         otime = oalt = olat = olon = -1000.0
 
@@ -148,7 +148,7 @@ class wrldmagm:
         # /*
             # COMPUTE DECLINATION (DEC), INCLINATION (DIP) AND
             # TOTAL INTENSITY (TI)
-        # */
+
         bh = math.sqrt((bx*bx)+(by*by))
         ti = math.sqrt((bh*bh)+(bz*bz))
         dec = math.degrees(math.atan2(by,bx))
