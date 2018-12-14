@@ -5,9 +5,15 @@
       <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/Magnetic_Field_Model/magFieldDriver.py" beforeDir="false" afterPath="$PROJECT_DIR$/Magnetic_Field_Model/magFieldDriver.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Magnetic_Field_Model/sun_vec.py" beforeDir="false" afterPath="$PROJECT_DIR$/Magnetic_Field_Model/sun_vec.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Magnetic_Field_Model/wrldmagm.py" beforeDir="false" afterPath="$PROJECT_DIR$/Magnetic_Field_Model/wrldmagm.py" afterDir="false" />
+=======
+      <change beforePath="$PROJECT_DIR$/Driver_Testing/driver_no_threads.py" beforeDir="false" afterPath="$PROJECT_DIR$/Driver_Testing/driver_no_threads.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Driver_Testing/testfunctions.py" beforeDir="false" afterPath="$PROJECT_DIR$/Driver_Testing/testfunctions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Magnetic_Field_Model/magFieldDriver.py" beforeDir="false" afterPath="$PROJECT_DIR$/Magnetic_Field_Model/magFieldDriver.py" afterDir="false" />
+>>>>>>> 46a352038c294b6ab2c1ef514576b20a0d34f301
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -27,10 +33,39 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Driver_Testing/driver_no_threads.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="318">
+              <caret line="481" column="26" lean-forward="true" selection-start-line="481" selection-start-column="26" selection-end-line="481" selection-end-column="26" />
+              <folding>
+                <element signature="e#654#672#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Driver_Testing/testfunctions.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="136">
+              <caret line="8" column="41" selection-start-line="8" selection-start-column="18" selection-end-line="8" selection-end-column="41" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Magnetic_Field_Model/magFieldDriver.py">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="221">
               <caret line="15" column="40" selection-start-line="15" selection-start-column="40" selection-end-line="15" selection-end-column="40" />
+=======
+            <state relative-caret-position="153">
+              <caret line="18" column="17" lean-forward="true" selection-start-line="18" selection-start-column="17" selection-end-line="18" selection-end-column="17" />
+              <folding>
+                <element signature="e#65#125#0" expanded="true" />
+              </folding>
+>>>>>>> 46a352038c294b6ab2c1ef514576b20a0d34f301
             </state>
           </provider>
         </entry>
@@ -39,8 +74,14 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
+<<<<<<< HEAD
       <find>wrldmagm</find>
       <find>maxord</find>
+=======
+      <find>getDCM</find>
+      <find>wrld</find>
+      <find>magECI</find>
+>>>>>>> 46a352038c294b6ab2c1ef514576b20a0d34f301
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -52,24 +93,39 @@
         <option value="$PROJECT_DIR$/getthetaerr.py" />
         <option value="$PROJECT_DIR$/Magnetic_Field_Model/getDCM.py" />
         <option value="$PROJECT_DIR$/Magnetic_Field_Model/decyear.py" />
+<<<<<<< HEAD
         <option value="$PROJECT_DIR$/Magnetic_Field_Model/sun_vec.py" />
         <option value="$PROJECT_DIR$/Magnetic_Field_Model/wrldmagm.py" />
+=======
+        <option value="$PROJECT_DIR$/Magnetic_Field_Model/utc2jul.py" />
+>>>>>>> 46a352038c294b6ab2c1ef514576b20a0d34f301
         <option value="$PROJECT_DIR$/Magnetic_Field_Model/magFieldDriver.py" />
+        <option value="$PROJECT_DIR$/Driver_Testing/testfunctions.py" />
+        <option value="$PROJECT_DIR$/Driver_Testing/driver_no_threads.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
+<<<<<<< HEAD
     <option name="x" value="-15" />
     <option name="y" value="-15" />
     <option name="width" value="1628" />
     <option name="height" value="1715" />
+=======
+    <option name="width" value="1630" />
+    <option name="height" value="1105" />
+>>>>>>> 46a352038c294b6ab2c1ef514576b20a0d34f301
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+<<<<<<< HEAD
       <pane id="Course" />
+=======
+      <pane id="Scope" />
+>>>>>>> 46a352038c294b6ab2c1ef514576b20a0d34f301
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -95,7 +151,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$USER_HOME$/Documents/CubeSat/tester.py" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="Errors" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -109,7 +165,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.magFieldDriver">
+  <component name="RunManager" selected="Python.utc2jul">
     <configuration name="getthetaerr" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="adcs" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -173,13 +229,36 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="utc2jul" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="adcs" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Magnetic_Field_Model" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Magnetic_Field_Model/utc2jul.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Python.getthetaerr" />
       <item itemvalue="Python.tester" />
       <item itemvalue="Python.magFieldDriver" />
+      <item itemvalue="Python.utc2jul" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.utc2jul" />
         <item itemvalue="Python.magFieldDriver" />
         <item itemvalue="Python.getthetaerr" />
         <item itemvalue="Python.tester" />
@@ -189,33 +268,69 @@
   <component name="SvnConfiguration">
     <configuration />
   </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ab23b79f-86c3-4b97-8f70-d2d84156257c" name="Default Changelist" comment="" />
+      <created>1544136403095</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1544136403095</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
   <component name="ToolWindowManager">
+<<<<<<< HEAD
     <frame x="-6" y="-6" width="1293" height="693" extended-state="6" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.023847377" />
+=======
+    <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
+    <editor active="true" />
+    <layout>
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.16060807" />
+>>>>>>> 46a352038c294b6ab2c1ef514576b20a0d34f301
       <window_info id="Structure" order="1" weight="0.25" />
+      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
+<<<<<<< HEAD
       <window_info anchor="bottom" id="Run" order="2" weight="0.3248731" />
+=======
+      <window_info anchor="bottom" id="Run" order="2" weight="0.33144477" />
+>>>>>>> 46a352038c294b6ab2c1ef514576b20a0d34f301
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="TODO" order="6" weight="0.3286119" />
       <window_info anchor="bottom" id="Version Control" order="7" />
+<<<<<<< HEAD
       <window_info anchor="bottom" id="Python Console" order="8" />
       <window_info anchor="bottom" id="Educational.CheckDetails" order="9" show_stripe_button="false" />
       <window_info anchor="bottom" id="Terminal" order="10" />
+=======
+      <window_info anchor="bottom" id="Python Console" order="8" weight="0.3286119" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="9" visible="true" weight="0.2592068" />
+      <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
+>>>>>>> 46a352038c294b6ab2c1ef514576b20a0d34f301
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
     </layout>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/Documents/CubeSat/tester.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
+    <entry file="file://$USER_HOME$/Documents/CubeSat/tester.py" />
     <entry file="file://$PROJECT_DIR$/getthetaerr.py" />
     <entry file="file://$PROJECT_DIR$/Magnetic_Field_Model/decyear.py">
+<<<<<<< HEAD
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="306">
           <caret line="18" column="1" selection-start-line="18" selection-start-column="1" selection-end-line="18" selection-end-column="1" />
@@ -230,6 +345,8 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Magnetic_Field_Model/sun_vec.py">
+=======
+>>>>>>> 46a352038c294b6ab2c1ef514576b20a0d34f301
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="374">
           <caret line="26" column="70" selection-start-line="26" selection-start-column="70" selection-end-line="26" selection-end-column="70" />
@@ -250,10 +367,55 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Magnetic_Field_Model/utc2jul.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="13" column="36" selection-start-line="13" selection-start-column="36" selection-end-line="13" selection-end-column="36" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Magnetic_Field_Model/wrldmagm.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Magnetic_Field_Model/getDCM.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-272">
+          <caret line="17" lean-forward="true" selection-start-line="17" selection-end-line="17" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Magnetic_Field_Model/magFieldDriver.py">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="221">
           <caret line="15" column="40" selection-start-line="15" selection-start-column="40" selection-end-line="15" selection-end-column="40" />
+=======
+        <state relative-caret-position="153">
+          <caret line="18" column="17" lean-forward="true" selection-start-line="18" selection-start-column="17" selection-end-line="18" selection-end-column="17" />
+          <folding>
+            <element signature="e#65#125#0" expanded="true" />
+          </folding>
+>>>>>>> 46a352038c294b6ab2c1ef514576b20a0d34f301
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Driver_Testing/testfunctions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="8" column="41" selection-start-line="8" selection-start-column="18" selection-end-line="8" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Driver_Testing/driver_no_threads.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="318">
+          <caret line="481" column="26" lean-forward="true" selection-start-line="481" selection-start-column="26" selection-end-line="481" selection-end-column="26" />
+          <folding>
+            <element signature="e#654#672#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

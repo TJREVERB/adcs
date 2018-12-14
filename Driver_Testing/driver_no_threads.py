@@ -393,21 +393,16 @@ def q2dcm(q):
 
     return R
 def getDCM(bV, sV, bI, sI):
-    bV = np.matrix([bV])
-    sV = np.matrix([sV])
-    bI = np.matrix([bI])
-    sI = np.matrix([sI])
-
-    bV = np.reshape(bV, (1,-1))/LA.norm(bV) #
-    sV = np.reshape(sV, (1,-1))/LA.norm(sV)  #
-    bI = np.reshape(bI, (1,-1))/LA.norm(bI)  #
-    sI = np.reshape(sI, (1,-1))/LA.norm(sI)  #
+    bV = np.reshape(bV, (1,-1))/linalg.norm(bV) #
+    sV = np.reshape(sV, (1,-1))/linalg.norm(sV)  #
+    bI = np.reshape(bI, (1,-1))/linalg.norm(bI)  #
+    sI = np.reshape(sI, (1,-1))/linalg.norm(sI)  #
 
     vu2 = np.asmatrix(np.cross(bV, sV))
-    vu2 = np.asmatrix(vu2/LA.norm(vu2))
+    vu2 = np.asmatrix(vu2/linalg.norm(vu2))
     vmV = np.hstack((bV.getH(), vu2.getH(), np.asmatrix(np.cross(bV, vu2)).getH())) #
     iu2 = np.asmatrix(np.cross(bI, sI))
-    iu2 = np.asmatrix(iu2/LA.norm(iu2))
+    iu2 = np.asmatrix(iu2/linalg.norm(iu2))
     imV = np.hstack((bI.getH(), iu2.getH(), np.asmatrix(np.cross(bI, iu2)).getH())) #
     ivDCM = np.asmatrix(vmV)*np.asmatrix(imV).getH()
     return ivDCM
@@ -473,16 +468,30 @@ DCMtrue = q2dcm(qtrue)
 #[magTotal,~] = BDipole(cart,sc.jd0,[0;0;0]);
 bI = 1.0*(10e-09) * magECI
 bI = bI/np.linalg.norm(bI)
+print(bI)
+tempbI = list()
+for val in bI:
+    item = np.array(val)
+    tempbI.append(item)
+print(tempbI)
+bI = np.asmatrix(tempbI) # NOT WORKINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG -JASON
+print(bI)
 sI = sun_vec(sc.jd0-utc2jul(datetime(1980,1,6,0,0,0)))
 sI = sI/np.linalg.norm(sI)
 bV = DCMtrue*bI
 bV = bV/np.linalg.norm(bV)
-print(bV)
 bV = np.squeeze(np.asarray(bV))
-print(bV)
+tempbV = list()
+for x in range(0, len(bV)):
+    tempbV.append(np.trim_zeros(bV[x]))
+bV = np.asmatrix(tempbV)
 sV = DCMtrue*sI
 sV = sV/np.linalg.norm(sV)
 sV = np.squeeze(np.asarray(sV))
+tempsV = list()
+for x in range(0, len(sV)):
+    tempsV.append(np.trim_zeros(sV[x]))
+sV = np.asmatrix(tempsV)
 
 #Attitude properties
 dcm = getDCM(bV,sV,bI,sI)
