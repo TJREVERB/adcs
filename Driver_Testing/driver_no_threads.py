@@ -468,23 +468,16 @@ DCMtrue = q2dcm(qtrue)
 #[magTotal,~] = BDipole(cart,sc.jd0,[0;0;0]);
 bI = 1.0*(10e-09) * magECI
 bI = bI/np.linalg.norm(bI)
-print(bI)
-tempbI = list()
-for val in bI:
-    item = np.array(val)
-    tempbI.append(item)
-print(tempbI)
-bI = np.asmatrix(tempbI) # NOT WORKINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG -JASON
-print(bI)
+bI = np.asmatrix(bI)
+bI = bI.getH()
+
 sI = sun_vec(sc.jd0-utc2jul(datetime(1980,1,6,0,0,0)))
 sI = sI/np.linalg.norm(sI)
+
 bV = DCMtrue*bI
 bV = bV/np.linalg.norm(bV)
-bV = np.squeeze(np.asarray(bV))
-tempbV = list()
-for x in range(0, len(bV)):
-    tempbV.append(np.trim_zeros(bV[x]))
-bV = np.asmatrix(tempbV)
+bV = np.asmatrix(bV)
+
 sV = DCMtrue*sI
 sV = sV/np.linalg.norm(sV)
 sV = np.squeeze(np.asarray(sV))
