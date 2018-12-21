@@ -8,6 +8,10 @@ class magFieldDriver:
      def testFunction(self, bV, sV, lat, long, alt, time):
          jdays = utc2jul.utc2jul(time)
          sI = sun_vec.sun_vec(jdays-2444244.5)
+         temp = np.matrix([0, 0, -1]).transpose()
+         temp = pm.ned2ecef(0, 0, -1, 30, 0, 0)
+         temp = temp/np.linalg.norm(temp)
+         print(temp)
          print("sI:")
          print(sI)
          print("-----------------------------------------")
@@ -48,7 +52,6 @@ class magFieldDriver:
 
 driver = magFieldDriver()
 print(driver.mainTester())
-
 # time = datetime.datetime(2018, 11, 8, 12, 0, 0)
 # gm = wrldmagm.wrldmagm("WMM2015.COF")
 # bI = np.matrix(gm.wrldmagm(5, -135, 396856, decyear.decyear(time)))
