@@ -18,13 +18,15 @@ def getqrefnadir(poskep):
 def getqrefsun(poskep):
     for i in range(2,6):
         poskep[i]=poskep[i]*math.pi/180
-    target=sun_vec(start_day)
-    
-    
+    sun=sunsensors() #return column vector
+    z = getDCM(bV, sV, bI, sI) * np.matrix([0,0,1]).getH()
+    vecu=np.cross(sun,z)
+    uma=LA.norm(vecu)
+    vecu = vecu/uma
+    thetadegrees = math.asin(uma) * 180/math.pi
+    alpha = 90-thetadegrees
+    qref = np.matrix([[vecu*math.sin((alpha/2)*math.pi/180)],[math.cos((alpha/2)*math.pi/180)]])
     return(qref)
-
-def angle(v1, v2):
-  return math.acos(dotproduct(v1, v2) / (length(v1) * length(v2)))
 
 import numpy as np
 def qmult(q1,q2):
