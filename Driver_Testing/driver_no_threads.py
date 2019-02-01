@@ -243,7 +243,7 @@ class wrldmagm:
             if (glat > 0.0 and glon >= 0.0):
                 gv = dec-glon
             if (glat > 0.0 and glon < 0.0):
-                gv = dec+math.fabs(glon);
+                gv = dec+math.fabs(glon)
             if (glat < 0.0 and glon >= 0.0):
                 gv = dec+glon
             if (glat < 0.0 and glon < 0.0):
@@ -411,7 +411,7 @@ class KOE:
     sma = 6778557 #meters
     ecc = 0.0001973
     incl = 51.6397*math.pi/180
-    raan = 115.7654*math.pi/180;
+    raan = 115.7654*math.pi/180
     argp = 211.4532*math.pi/180
     tran = 0*math.pi/180
     """
@@ -459,6 +459,8 @@ magECI = pymap3d.ecef2eci(magECEF, current_time)
 #Initial CubeSat Attitude
 #qtrue = [.5,.5,.5,.99];
 #qtrue = [0.5435   -0.0028   -0.6124   -0.5741];
+
+#THIS IS ALL SIMULATION DELETE THESE LINES IN FLIGHT CODE
 qtrue = np.matrix([0,0,math.sqrt(2)/2,math.sqrt(2)/2])
 qtrue = qtrue/np.linalg.norm(qtrue)
 qtrue = np.squeeze(np.asarray(qtrue))
@@ -466,6 +468,8 @@ DCMtrue = q2dcm(qtrue)
 
 #Sensor Outputs
 #[magTotal,~] = BDipole(cart,sc.jd0,[0;0;0]);
+
+#BV AND SV ARE SIMULATION PARAMETERS; IN FLIGHT CODE WE TAKE IT FROM THE MAGNETOMETER
 bI = 1.0*(10e-09) * magECI
 bI = bI/np.linalg.norm(bI)
 bI = np.asmatrix(bI)
