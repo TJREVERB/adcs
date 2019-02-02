@@ -6,7 +6,7 @@ from datetime import datetime
 
 def runProp():
     #orb = Orbital(tle)
-    orb = Orbital("ISS (ZARYA)", tle_file="FILE PATH TO TLE")
+    orb = Orbital("TJREVERB", tle_file="FILE PATH TO TLE")
     now = datetime.utcnow()
     #print(tle.inclination)
     #print(orb.get_position(now))
