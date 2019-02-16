@@ -10,5 +10,7 @@ adcs:
     - tran
   tle:
     - manomaly: 0
+    - lastday:    #updated as soon as gps starts up
+    - lastyear:   #updated as soon as gps starts up
   inertia: [0.0108, 0.0108, 0.0108]
   wrldmagm: "WMM.COF"
