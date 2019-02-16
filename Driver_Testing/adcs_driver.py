@@ -31,7 +31,8 @@ def load_config(config_file):
             print(error)
 
 def main():
-    config = load_config('config_adcs.yml')
+    global epoch
+    config = load_config('config_adcs.yaml')
     epoch = datetime.utcnow()
     config['adcs']['sc']['jd0'] = utc2jul(epoch)
     print(config['adcs']['koe'])
@@ -40,4 +41,4 @@ if __name__ == "__main__":
     t1 = threading.Thread(target=main, args=(), daemon=True)
     t1.start()
     t1.join()
-    print("Calculation complete.")
+    print("Calculation complete for " + epoch.strftime("%Y-%m-%d %H:%M:%S") + " UTC.")
