@@ -14,6 +14,7 @@
 # NOTE: Epoch is not detemined in this function as of yet.
 
 import numpy as np
+import math
 
 def cart2kep(r, vel):
     G = 6.67408 * (10**(-11)) # Gravitational constant(N kg^-2 m^2)
@@ -29,36 +30,37 @@ def cart2kep(r, vel):
 
     # True anomaly: (v)
     if np.dot(r, vel) >= 0:
-        v = np.arccos(np.dot(e,r)/(np.linalg.norm(e) * np.linalg.norm(r)))
+        v = math.acos(np.dot(e,r)/(np.linalg.norm(e) * np.linalg.norm(r)))
     else:
-        v = 2*np.pi - np.arccos(np.dot(e,r)/(np.linalg.norm(e) * np.linalg.norm(r)))
+        v = 2*np.pi - math.acos(np.dot(e,r)/(np.linalg.norm(e) * np.linalg.norm(r)))
 
     # Inclination: (i)
-    i = np.arccos(h[2]/np.linalg.norm(h))
+    i = math.acos(h[2]/np.linalg.norm(h))
 
     # Eccentric anomaly: (E)
     # Reference: https://en.wikipedia.org/wiki/Eccentric_anomaly
-    E = 2*np.arctan(np.tan(v/2)/np.sqrt((1+escalar)/(1-escalar)))
+    E = 2*math.atan(math.tan(v/2)/math.sqrt((1+escalar)/(1-escalar)))
 
     # Longitude of the ascending node: (l)
     if n[1] >= 0:
-        l = np.arccos(n[0]/np.linalg.norm(n))
+        l = math.acos(n[0]/np.linalg.norm(n))
     else:
-        l = 2*np.pi - np.arccos(n[0]/np.linalg.norm(n))
+        l = 2*math.pi - math.acos(n[0]/np.linalg.norm(n))
     
     # Argument of periapsis: (w)
     if e[2] >= 0:
-        w = np.arccos(np.dot(n,e)/(np.linalg.norm(n) * np.linalg.norm(e)))
+        w = math.acos(np.dot(n,e)/(np.linalg.norm(n) * np.linalg.norm(e)))
     else:
-        w = 2*np.pi - np.arccos(np.dot(n,e)/(np.linalg.norm(n) * np.linalg.norm(e)))
+        w = 2*math.pi - math.acos(np.dot(n,e)/(np.linalg.norm(n) * np.linalg.norm(e)))
     
     # Mean anomaly: (m)
-    m = E - escalar*np.sin(E)
+    m = E - escalar*math.sin(E)
 
     # Semi-major axis: (a)
     a = 1/(2/np.linalg.norm(r) - (np.linalg.norm(vel)**2)/GM)
     return np.array([a, escalar, w, l, i, m])
-
+"""
 r = [3000000, 5000000, 1000000]
 vel = [3000, 3000, 5000]
 print(cart2kep(r, vel))
+"""

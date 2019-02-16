@@ -30,6 +30,10 @@ def load_config(config_file):
         except yaml.YAMLError as error:
             print(error)
 
+def write_config(config_file, data):
+    with open(config_file, 'w') as stream:
+        yaml.dump(data, stream, default_flow_style=False)
+
 def main():
     global epoch
     config = load_config('config_adcs.yaml')
