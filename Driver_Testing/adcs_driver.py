@@ -12,18 +12,32 @@ from wrldmagm import wrldmagm
 
 import time
 import numpy as np
-from math import floor, pi, sin, cos, pi, radians, norm
-from datetime import datetime, utcnow, date
+from numpy import linalg
+from math import floor, pi, sin, cos, pi, radians
+from datetime import datetime, date
 from orbital import earth, KeplerianElements, utilities
 from orbital.utilities import Position, Velocity
 from pymap3d import ecef2eci
 
 import logging
-from threading import Thread
+import threading
+import yaml
+
+def load_config(config_file):
+    with open(config_file, 'r') as stream:
+        try:
+            return yaml.safe_load(stream)
+        except yaml.YAMLError as error:
+            print(error)
 
 def main():
+    config = load_config('config_adcs.yml')
     epoch = datetime.utcnow()
+    config['adcs']['sc']['jd0'] = utc2jul(epoch)
+    print(config['adcs']['koe'])
 
 if __name__ == "__main__":
-    t1 = Thread(target=main, args=(), daemon=True)
+    t1 = threading.Thread(target=main, args=(), daemon=True)
     t1.start()
+    t1.join()
+    print("Calculation complete.")

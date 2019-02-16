@@ -8,5 +8,7 @@ adcs:
     - raan
     - argp
     - tran
-  inertia: [0.0108, 0.0108, 0.0108]
+  sc:
+    inertia: [0.0108, 0.0108, 0.0108]
+    jd0: 2458529.50
   wrldmagm: "WMM.COF"
