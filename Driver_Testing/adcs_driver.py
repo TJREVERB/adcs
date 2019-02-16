@@ -38,8 +38,9 @@ def main():
     global epoch
     config = load_config('config_adcs.yaml')
     epoch = datetime.utcnow()
-    config['adcs']['sc']['jd0'] = utc2jul(epoch)
-    print(config['adcs']['koe'])
+    config['adcs']['sc']['jd0'] = utc2jul(epoch) # Use write config.
+    
+    GM = 3.986004418*(10**14)
 
 if __name__ == "__main__":
     t1 = threading.Thread(target=main, args=(), daemon=True)
