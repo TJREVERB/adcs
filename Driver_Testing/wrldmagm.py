@@ -1,110 +1,30 @@
-"""
-Overall ADCS driver program. Calculates sensor outputs given sample
-sun_vec data and GPS data.
+# geomag.py
+# by Christopher Weiss cmweiss@gmail.com
+# Modified by Bharath Dileepkumar, 11-01-2018
 
-Completed 15 November, 2018.
-"""
-"""
-SAMPLE RUN:
+# Adapted from the geomagc software and World Magnetic Model of the NOAA
+# Satellite and Information Service, National Geophysical Data Center
+# http://www.ngdc.noaa.gov/geomag/WMM/DoDWMM.shtml
+#
+# Suggestions for improvements are appreciated.
 
-INPUT:
-
-epoch =
-    '08-Nov-2018 12:00:00.000'
-sv =
-    0.736594581345171
-    -0.321367778737346
-    0.595106018724694
-bv =
-    0.593302194154829
-    -0.297353472232347
-    -0.748046401610510
-lat_deg =
-    5.335745187657780
-lon_deg =
-    -1.348386750055788e+02
-alt_meter =
-    3.968562753276266e+05
-
-OUTPUT:
-
-    -0.851199700910797  -0.378355652210824   0.363739013042995
-
-    -0.406178514058743   0.913793748455871  -0.000000000000000
-
-    -0.332382436188197  -0.147742971822997  -0.931500901980512
-"""
-import numpy as np
-from numpy import linalg
+# USAGE:
+#
+# >>> gm = geomag.GeoMag("WMM.COF")
+# >>> mag = gm.GeoMag(80,0)
+# >>> mag.dec
+# -6.1335150785195536
+# >>>
 
 import math, os, unittest
-
-import datetime
-from datetime import datetime, date
-
-from jdcal import gcal2jd, jd2gcal
-
-import time
-
-from orbital import earth, KeplerianElements, utilities
-from orbital.utilities import Position, Velocity
-
-import pymap3d
-
-#import yaml
-#with open("config.yml.sample", 'r') as ymlfile:
-#    config = yaml.load(ymlfile)
-#from core import config
-
-"""""""""""""""""""""""
-MAIN METHODS
-"""""""""""""""""""""""
-def utc2jul(dt):
-    a = math.floor((14-dt.month)/12)
-    y = dt.year + 4800 - a
-    m = dt.month + 12*a - 3
-    jdn = dt.day + math.floor((153*m + 2)/5) + 365*y + math.floor(y/4) - \
-    math.floor(y/100) + math.floor(y/400) - 32045
-    jd = jdn + (dt.hour - 12) / 24 + dt.minute / 1440 + \
-    dt.second / 86400 - 2415020.5
-    return jd
-def sun_vec(start_day):
-    jd = start_day
-    L = (279.696678 + 0.9856473354*jd + 2.267e-13*(jd**2))
-    Ms_r = (math.pi/180)*(358.475845 + 0.985600267*jd - (1.12e-13)*(jd**2) - \
-    (7e-20)*(jd**3))
-    dL = 1.918*math.sin(Ms_r) + 0.02*math.sin(2*Ms_r)
-    L_sun = ((math.pi/180)*(L+dL))%(2*math.pi)
-    inc_E = (math.pi/180)*(-23.45)
-    #R = [1,0,0; 0,cos(inc_E),sin(inc_E); 0,-sin(inc_E),cos(inc_E)];# [3,3]
-    #sun_ecl = [cos(L_sun);sin(L_sun);zeros(1,size(start_day,2))];  # [3,n]
-    R = np.array([[1,0,0],[0,math.cos(inc_E),math.sin(inc_E)], \
-    [0,-math.sin(inc_E),math.cos(inc_E)]],np.float32)
-    sun_ecl = np.array([[math.cos(L_sun)],[math.sin(L_sun)],[0]],np.float32)
-    sun_equ = np.matmul(R,sun_ecl)   # [3,1]
-    return sun_equ
-def kep2cart(KOE):
-    orbitx = KeplerianElements(a=KOE[0], e=KOE[1], i=KOE[2], raan=KOE[3],
-    arg_pe=KOE[4], M0=KOE[5], body=earth)
-    cart = np.array([list(orbitx.r), list(orbitx.v)])
-    return cart
-def jd2dvec(jd):
-    ps = jd - 2400000.5 # Done to increase time precision
-    epochvec = list(jd2gcal(2400000.5, ps))  #Converts tuple to list
-    hours = int(epochvec[3]*24)
-    epochvec.append(epochvec[3]*24 - hours) #Sets jdarray[4] to decimal of hours
-    epochvec[3] = hours
-    minutes = int(epochvec[4]*60)
-    epochvec.append(epochvec[4]*60 - minutes)
-    epochvec[4] = minutes
-    epochvec[5] = (epochvec[5]*60)
-    return epochvec
+import numpy as np
+from datetime import date
 
 class wrldmagm:
 
-    def wrldmagm(self, dlat, dlon, h, time): # latitude (decimal degrees), longitude (decimal degrees), altitude (feet), date
+    def wrldmagm(self, dlat, dlon, h, time=date.today()): # latitude (decimal degrees), longitude (decimal degrees), altitude (feet), date
         #time = date('Y') + date('z')/365
-        #time = time.year+((time - date(time.year,1,1)).days/365.0)
+        time = time.year+((time - date(time.year,1,1)).days/365.0)
         alt = h/3280.8399
 
         otime = oalt = olat = olon = -1000.0
@@ -243,7 +163,7 @@ class wrldmagm:
             if (glat > 0.0 and glon >= 0.0):
                 gv = dec-glon
             if (glat > 0.0 and glon < 0.0):
-                gv = dec+math.fabs(glon)
+                gv = dec+math.fabs(glon);
             if (glat < 0.0 and glon >= 0.0):
                 gv = dec+glon
             if (glat < 0.0 and glon < 0.0):
@@ -277,6 +197,7 @@ class wrldmagm:
         #retFinal = np.matrix([retMag, retobj.bh, dec, retobj.dip, retobj.ti])
         #return retobj
         return retMag
+
     def __init__(self, wmm_filename=None):
         if not wmm_filename:
             wmm_filename = os.path.join(os.path.dirname(__file__), 'WMM.COF')
@@ -362,151 +283,33 @@ class wrldmagm:
                 D2=D2-1
                 m=m+D1
 
-def decyear(date):
-    def sinceEpoch(date): # returns seconds since epoch
-        return time.mktime(date.timetuple())
-    s = sinceEpoch
+class GeoMagTest(unittest.TestCase):
 
-    year = date.year
-    startOfThisYear = datetime(year=year, month=1, day=1)
-    startOfNextYear = datetime(year=year+1, month=1, day=1)
+    d1=date(2015,1,1)
+    d2=date(2017,7,2)
 
-    yearElapsed = s(date) - s(startOfThisYear)
-    yearDuration = s(startOfNextYear) - s(startOfThisYear)
-    fraction = yearElapsed/yearDuration
+    test_values = (
+        # date, alt, lat, lon, var
+        (d1, 0, 80, 0,  -3.85),
+        (d1, 0, 0, 120, 0.57),
+        (d1, 0, -80, 240,  69.81),
+        (d1, 328083.99, 80, 0, -4.27),
+        (d1, 328083.99, 0, 120, 0.56),
+        (d1, 328083.99, -80, 240, 69.22),
+        (d2, 0, 80, 0, -2.75),
+        (d2, 0, 0, 120, 0.32),
+        (d2, 0, -80, 240, 69.58),
+        (d2, 328083.99, 80, 0, -3.17),
+        (d2, 328083.99, 0, 120, 0.32),
+        (d2, 328083.99, -80, 240, 69.00),
+    )
 
-    return date.year + fraction
-def q2dcm(q):
-    R = np.zeros((3,3))
+    # def test_declination(self):
+    #     gm = GeoMag()
+    #     for values in self.test_values:
+    #         calcval=gm.GeoMag(values[2], values[3], values[1], values[0])
+    #         print(calcval)
+    #         self.assertAlmostEqual(values[4], calcval.dec, 2, 'Expected %s, result %s' % (values[4], calcval.dec))
 
-    R[0,0] = q[0]**2-q[1]**2-q[2]**2+q[3]**2
-    R[0,1] = 2*(q[0]*q[1]+q[2]*q[3])
-    R[0,2] = 2*(q[0]*q[2]-q[1]*q[3])
-
-    R[1,0] = 2*(q[0]*q[1]-q[2]*q[3])
-    R[1,1] = -q[0]**2+q[1]**2-q[2]**2+q[3]**2
-    R[1,2] = 2*(q[1]*q[2]+q[0]*q[3])
-
-    R[2,0] = 2*(q[0]*q[2]+q[1]*q[3])
-    R[2,1] = 2*(q[1]*q[2]-q[0]*q[3])
-    R[2,2] = -q[0]**2-q[1]**2+q[2]**2+q[3]**2
-
-    return R
-def getDCM(bV, sV, bI, sI):
-    bV = np.reshape(bV, (1,-1))/linalg.norm(bV) #
-    sV = np.reshape(sV, (1,-1))/linalg.norm(sV)  #
-    bI = np.reshape(bI, (1,-1))/linalg.norm(bI)  #
-    sI = np.reshape(sI, (1,-1))/linalg.norm(sI)  #
-
-    vu2 = np.asmatrix(np.cross(bV, sV))
-    vu2 = np.asmatrix(vu2/linalg.norm(vu2))
-    vmV = np.hstack((bV.getH(), vu2.getH(), np.asmatrix(np.cross(bV, vu2)).getH())) #
-    iu2 = np.asmatrix(np.cross(bI, sI))
-    iu2 = np.asmatrix(iu2/linalg.norm(iu2))
-    imV = np.hstack((bI.getH(), iu2.getH(), np.asmatrix(np.cross(bI, iu2)).getH())) #
-    ivDCM = np.asmatrix(vmV)*np.asmatrix(imV).getH()
-    return ivDCM
-class KOE:
-    GM = 3.986004418*(10**14)
-    sma = 6778557 #meters
-    ecc = 0.0001973
-    incl = 51.6397*math.pi/180
-    raan = 115.7654*math.pi/180
-    argp = 211.4532*math.pi/180
-    tran = 0*math.pi/180
-    """
-    #ISS KOE at an epoch of 2018/3/18 @ 12:00:00.000
-    sma = 6789165.94
-    ecc = 0.0018939
-    incl = 51.58923
-    raan = 349.09863 deg
-    argp = 55.38890 deg
-    tran = 318.52399 deg
-    """
-class sc:
-    jd0 = utc2jul(datetime(2018, 11, 8, 12, 0, 0))
-    inertia = np.diag([.0108, .0108, .0108])
-
-"""""""""""""""""""""""
-DRIVING THREAD
-"""""""""""""""""""""""
-#def listen():
-#    while True:
-epoch = datetime(2018, 11, 8, 12, 0, 0)#datetime.utcnow()
-sc.jd0 = utc2jul(epoch)
-sc.inertia = np.diag([.0108, .0108, .0108])
-
-#Orbital Properties
-GM = 3.986004418*(10**14)
-KOE = np.array([KOE.sma, KOE.ecc, KOE.incl, KOE.raan, KOE.argp, KOE.tran])
-current_time = epoch
-epoch = np.array([epoch.year, epoch.month, epoch.day, epoch.hour, \
-epoch.minute, epoch.second])
-cart = kep2cart(KOE)
-cartloc = np.array([cart[0,0], cart[0,1], cart[0,2]])
-
-#Magnetic Field Model
-epochvec = jd2dvec(sc.jd0)
-lla = np.array([5.335745187657780, -1.348386750055788e+02, \
-3.968562753276266e+05*3.28084]) # CONVERT METERS TO FEET
-#lla = np.array(gps.lat, gps.lon, gps.alt)
-gm = wrldmagm("WMM.COF")
-magECEF = gm.wrldmagm(lla[0],lla[1],lla[2], \
-decyear(datetime(2018, 1, 1)))
-magECEF = np.squeeze(np.asarray(magECEF))
-magECI = pymap3d.ecef2eci(magECEF, current_time)
-
-#Initial CubeSat Attitude
-#qtrue = [.5,.5,.5,.99];
-#qtrue = [0.5435   -0.0028   -0.6124   -0.5741];
-
-#THIS IS ALL SIMULATION DELETE THESE LINES IN FLIGHT CODE
-qtrue = np.matrix([0,0,math.sqrt(2)/2,math.sqrt(2)/2])
-qtrue = qtrue/np.linalg.norm(qtrue)
-qtrue = np.squeeze(np.asarray(qtrue))
-DCMtrue = q2dcm(qtrue)
-
-#Sensor Outputs
-#[magTotal,~] = BDipole(cart,sc.jd0,[0;0;0]);
-
-#BV AND SV ARE SIMULATION PARAMETERS; IN FLIGHT CODE WE TAKE IT FROM THE MAGNETOMETER
-bI = 1.0*(10e-09) * magECI
-bI = bI/np.linalg.norm(bI)
-bI = np.asmatrix(bI)
-bI = bI.getH()
-
-sI = sun_vec(sc.jd0-utc2jul(datetime(1980,1,6,0,0,0)))
-sI = sI/np.linalg.norm(sI)
-
-bV = DCMtrue*bI
-bV = bV/np.linalg.norm(bV)
-bV = np.asmatrix(bV)
-
-sV = DCMtrue*sI
-sV = sV/np.linalg.norm(sV)
-sV = np.squeeze(np.asarray(sV))
-tempsV = list()
-for x in range(0, len(sV)):
-    tempsV.append(np.trim_zeros(sV[x]))
-sV = np.asmatrix(tempsV)
-
-#Attitude properties
-dcm = getDCM(bV,sV,bI,sI)
-print(dcm)
-"""
-Still needs to be converted:
-"""
-"""
-q = dcm2q(dcm)
-
-#Control Torque Calculation
-#qref = getqref(struct2array(KOE));
-qref = [0,0,-sqrt(2)/2,sqrt(2)/2];
-qerr = getqerr(q0,qref);
-thetaerr = getthetaerr(qerr);
-#ctcomm = -1*sim.gain*thetaerr-1*sim.rgain*(w0-sim.wref); #Expected control torque (row vector)
-ctcomm = -1*sim.gain*thetaerr;
-magdip = getMC(ctcomm',bV,sim.mmax,sim.mtrans); #Magnetic dipole in body frame
-ctprod = cross(magdip,bV);
-"""
-        #time.sleep(1);
+if __name__ == '__main__':
+    unittest.main()

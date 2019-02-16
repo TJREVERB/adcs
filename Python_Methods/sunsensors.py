@@ -16,16 +16,18 @@ def sunsensors(theta, phi, m):
     th = theta[I]
     ph = phi[I]
     vec = np.array([[sin(th)*cos(ph)],[sin(th)*sin(ph)],[cos(th)]], np.float32);
-    if I == 0:
+    if I == 0: #+X
         temp = np.array([[1, 0, 0], [0, 0, 1], [0, -1, 0]])
         vec = np.matmul(temp, vec)
-    elif I == 1:
+    elif I == 1: #-X
         temp = np.array([[1, 0, 0], [0, 0, -1], [0, 1, 0]])
         vec = np.matmul(temp, vec)
-    elif I == 2:
+    elif I == 2: #+y
         temp = np.array([[-1, 0, 0], [0, 1, 0], [1, 0, 0]])
         vec = np.matmul(temp, vec)
-    elif I == 3:
+    elif I == 3: #-Y
         temp = np.array([[0, 0, 1], [0, 1, 0], [-1, 0, 0]])
         vec = np.matmul(temp, vec)
+    elif I == 4: #+Z
+        return vec
     return vec;
