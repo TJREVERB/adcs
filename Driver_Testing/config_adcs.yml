@@ -8,5 +8,7 @@ adcs:
     - raan
     - argp
     - tran
+  tle:
+    - manomaly
   inertia: [0.0108, 0.0108, 0.0108]
   wrldmagm: "WMM.COF"
