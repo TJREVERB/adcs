@@ -9,6 +9,6 @@ adcs:
     - argp
     - tran
   tle:
-    - manomaly: -1
+    - manomaly: 0
   inertia: [0.0108, 0.0108, 0.0108]
   wrldmagm: "WMM.COF"
