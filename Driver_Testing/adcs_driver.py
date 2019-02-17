@@ -40,7 +40,11 @@ def main():
     epoch = datetime.utcnow()
     config['adcs']['sc']['jd0'] = utc2jul(epoch) # Use write config.
     
-    GM = 3.986004418*(10**14)
+    koe = np.array([])
+    for i in range(1,6):
+        print(config['adcs']['koe'][i])
+        np.append(koe, config['adcs']['koe'][i])
+    print(koe)
 
 if __name__ == "__main__":
     t1 = threading.Thread(target=main, args=(), daemon=True)
