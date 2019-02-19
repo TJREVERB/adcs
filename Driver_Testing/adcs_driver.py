@@ -9,6 +9,7 @@ from sun_vec import sun_vec
 from sunsensors import sunsensors
 from utc2jul import utc2jul
 from wrldmagm import wrldmagm
+# import gps
 
 import time
 import numpy as np
@@ -34,13 +35,25 @@ def write_config(config_file, data):
     with open(config_file, 'w') as stream:
         yaml.dump(data, stream, default_flow_style=False)
 
+def gps_is_on():
+    return False
+
+def gps_get_cart():
+    r = np.array([])
+    v = np.array([])
+    return np.array([[r],[v]])
+
 def main():
     global epoch
-    config = load_config('config_adcs.yaml')
-    epoch = datetime.utcnow()
-    koe_array = np.array([])
-    for key, val in config['adcs']['koe'].items():
-        koe_array = np.append(koe_array, val)
+    if(gps_is_on())
+        cart = gps_get_cart()
+        koe_array = cart2kep(cart[0], cart[1])
+    else
+        config = load_config('config_adcs.yaml')
+        epoch = datetime.utcnow()
+        koe_array = np.array([])
+        for key, val in config['adcs']['koe'].items():
+            koe_array = np.append(koe_array, val)
     print(koe_array)
     config['adcs']['sc']['jd0'] = utc2jul(epoch) # Use write config.
     """
