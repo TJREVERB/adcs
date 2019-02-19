@@ -38,14 +38,18 @@ def main():
     global epoch
     config = load_config('config_adcs.yaml')
     epoch = datetime.utcnow()
+    koe_array = np.array([])
+    for key, val in config['adcs']['koe'].items():
+        koe_array = np.append(koe_array, val)
+    print(koe_array)
     config['adcs']['sc']['jd0'] = utc2jul(epoch) # Use write config.
-    
+    """
     koe = np.array([])
     for i in range(1,6):
         print(config['adcs']['koe'][i])
         np.append(koe, config['adcs']['koe'][i])
     print(koe)
-
+    """
 if __name__ == "__main__":
     t1 = threading.Thread(target=main, args=(), daemon=True)
     t1.start()
