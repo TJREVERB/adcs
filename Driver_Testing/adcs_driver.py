@@ -9,7 +9,8 @@ from sun_vec import sun_vec
 from sunsensors import sunsensors
 from utc2jul import utc2jul
 from wrldmagm import wrldmagm
-# import gps
+from cart2kep import cart2kep
+from gps import get_data
 
 import time
 import numpy as np
@@ -36,19 +37,23 @@ def write_config(config_file, data):
         yaml.dump(data, stream, default_flow_style=False)
 
 def gps_is_on():
-    return False
+    return True
 
-def gps_get_cart():
-    r = np.array([])
-    v = np.array([])
-    return np.array([[r],[v]])
+def tle_get_data():
+    return None;
 
 def main():
     global epoch
-    if(gps_is_on())
-        cart = gps_get_cart()
+    # If GPS is on, get Cartesian (position, velocity) vectors and UTC time.
+    # Convert Cartesian coordinates and time to a Keplerian Elements array.
+    # Update the config_adcs.yaml file with new KOE array.
+    if(gps_is_on()):
+        data = gps.get_data()
+        cart = data['']
         koe_array = cart2kep(cart[0], cart[1])
-    else
+        epoch = data['time']
+    else:
+        # write_config('config_adcs.yaml', tle_get_data())
         config = load_config('config_adcs.yaml')
         epoch = datetime.utcnow()
         koe_array = np.array([])
@@ -56,13 +61,7 @@ def main():
             koe_array = np.append(koe_array, val)
     print(koe_array)
     config['adcs']['sc']['jd0'] = utc2jul(epoch) # Use write config.
-    """
-    koe = np.array([])
-    for i in range(1,6):
-        print(config['adcs']['koe'][i])
-        np.append(koe, config['adcs']['koe'][i])
-    print(koe)
-    """
+
 if __name__ == "__main__":
     t1 = threading.Thread(target=main, args=(), daemon=True)
     t1.start()

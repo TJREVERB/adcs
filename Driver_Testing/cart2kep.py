@@ -17,6 +17,8 @@ import numpy as np
 import math
 
 def cart2kep(r, vel):
+    r = [float(i) for i in r]
+    vel = [float(i) for i in vel]
     G = 6.67408 * (10**(-11)) # Gravitational constant(N kg^-2 m^2)
     M = 5.9722 * (10**(24)) # Mass of Earth (kg)
     GM = G*M # Constant parameter
@@ -59,8 +61,8 @@ def cart2kep(r, vel):
     # Semi-major axis: (a)
     a = 1/(2/np.linalg.norm(r) - (np.linalg.norm(vel)**2)/GM)
     return np.array([a, escalar, w, l, i, m])
-"""
-r = [3000000, 5000000, 1000000]
-vel = [3000, 3000, 5000]
+
+r = [3000000., 5000000., 1000000.]
+vel = [3000., 3000., 5000.]
 print(cart2kep(r, vel))
-"""
+
