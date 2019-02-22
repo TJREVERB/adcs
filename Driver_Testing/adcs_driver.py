@@ -10,7 +10,7 @@ from sunsensors import sunsensors
 from utc2jul import utc2jul
 from wrldmagm import wrldmagm
 from cart2kep import cart2kep
-from gps import get_data
+from gps_dummy import get_data
 
 import time
 import numpy as np
@@ -48,9 +48,10 @@ def main():
     # Convert Cartesian coordinates and time to a Keplerian Elements array.
     # Update the config_adcs.yaml file with new KOE array.
     if(gps_is_on()):
-        data = gps.get_data()
-        cart = data['']
-        koe_array = cart2kep(cart[0], cart[1])
+        data = gps_dummy.get_data()
+        r = [data['x_pos'], data['y_pos'], data['z_pos']]
+        vel = [data['x_vel'], data['y_vel'], data['z_vel']]
+        koe_array = cart2kep(r, vel)
         epoch = data['time']
     else:
         # write_config('config_adcs.yaml', tle_get_data())
