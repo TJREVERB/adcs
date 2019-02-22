@@ -16,7 +16,7 @@ def checksum(line):
 	return b%10
     
 GM = 3.986004418*(10**14)
-file = open("issnew.txt", "r") 
+file = open("tjreverbtle.txt", "r") 
 lines = file.readlines()
 eachline = list()
 for line in lines:
