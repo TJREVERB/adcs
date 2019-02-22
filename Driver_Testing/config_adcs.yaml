@@ -14,4 +14,7 @@ adcs:
   sc:
     inertia: [0.0108, 0.0108, 0.0108]
     jd0: 2458529.50
+  tledata:
+    meananom: 0
+    lastyear: 2019
   wrldmagm: "WMM.COF"
