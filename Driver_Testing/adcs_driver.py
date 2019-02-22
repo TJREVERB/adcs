@@ -10,7 +10,7 @@ from sunsensors import sunsensors
 from utc2jul import utc2jul
 from wrldmagm import wrldmagm
 from cart2kep import cart2kep
-from gps_dummy import get_data
+from gps_dummy import gps_get_data
 
 import time
 import numpy as np
@@ -40,35 +40,39 @@ def write_config(config_file, data):
             print(error)
 
 def gps_is_on():
-    return True
+    return False
 
 def tle_get_data():
     return {};
 
+def generate_tle(koe):
+    return {};
+
 def main():
     global epoch
-    # If GPS is on, get Cartesian (position, velocity) vectors and UTC time.
+    # If GPS is on, get Cartesian (position, velocity) vectors and UTC time from the GPS.
     # Convert Cartesian coordinates and time to a Keplerian Elements array.
-    # Update the config_adcs.yaml file with new KOE array.
+    ######## NOT YET: ######## Generate a TLE from the KOE array.
     if(gps_is_on()):
-        data = get_data() # Data is a list (cache) of dictionaries representing a timestep.
-        i = len(data) # Get the last dictionary in the cache.
+        data = gps_get_data() # Data is a list (cache) of dictionaries representing a timestep.
+        i = len(data)-1 # Get the last dictionary in the cache.
         r = [data[i]['x_pos'], data[i]['y_pos'], data[i]['z_pos']] # Position state vector.
         vel = [data[i]['x_vel'], data[i]['y_vel'], data[i]['z_vel']] # Velocity state vector.
         epoch = data[i]['time'] # Datetime object representing the epoch.
             
         drag = 2.2 # Fixed drag coefficient.
         koe_array = cart2kep(r, vel) # Convert state vectors into an array representing the KOE.
-        koe_array = np.append(koe_array, drag) # 
-        koe_array = np.insert(koe_array, 0, utc2jul(epoch))
+        koe_array = np.append(koe_array, drag) # Add the drag coefficient to the end of the array.
+        koe_array = np.insert(koe_array, 0, utc2jul(epoch)) # Add the Juilan epoch to the beginning.
+        generate_tle(koe_array) # Generate the new TLE.
         print(koe_array)
-    # If GPS is off, write data to the YAML from the previous TLE file.
-    # 
+    # If GPS is off, write data to the YAML from the previous TLE file adn the system time.
+    # Pull data from the YAML to construct a KOE array.
     else:
-        write_config('config_adcs.yaml', tle_get_data())
-        config = load_config('config_adcs.yaml')
+        # write_config('config_adcs.yaml', tle_get_data()) # Write TLE data to YAML.
+        config = load_config('config_adcs.yaml') # Load the data from the YAML.
         epoch = datetime.utcnow()
-        koe_array = np.array([])
+        koe_array = np.array([utc2jul(epoch)])
         for key, val in config['adcs']['koe'].items():
             koe_array = np.append(koe_array, val)
     # print(koe_array)
