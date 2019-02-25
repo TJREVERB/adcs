@@ -1,8 +1,8 @@
 adcs:
   mode: normal
   timeout: 10
+  # Units in meters and degrees.
   koe:
-    # Units in meters and degrees.
     epch: 2458529.50
     sma: 6791113.16
     ecc: .0014246
@@ -11,6 +11,10 @@ adcs:
     argp: 33.54134
     tran: 312.21070
     drag: 2.2
+  lla:
+    lat: 5.33574
+    lon: -134.83867
+    alt: 396856.27533
   sc:
     inertia: [0.0108, 0.0108, 0.0108]
     jd0: 2458529.50
