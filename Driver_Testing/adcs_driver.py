@@ -54,9 +54,11 @@ def main():
     config = load_config('config_adcs.yaml')  # Load the data from the YAML.
     # If GPS is on, get Cartesian (position, velocity) vectors and UTC time from the GPS.
     # Convert Cartesian coordinates and time to a Keplerian Elements array.
-    ######## NOT YET: ######## Generate a TLE from the KOE array.
+    # Generate a new TLE using the KOE.
+    # Write LLA and KOE data to the YAML file.
+
     if gps_is_on():
-        data = gps_get_data()  # Data is a list (cache) of dictionaries representing a timestep.
+        data = gps_get_data()  # Data is a list (cache) of dictionaries representing one timestep.
         i = len(data)-1  # Get the last dictionary in the cache.
         r = [data[i]['x_pos'], data[i]['y_pos'], data[i]['z_pos']]  # Position state vector.
         vel = [data[i]['x_vel'], data[i]['y_vel'], data[i]['z_vel']]  # Velocity state vector.
@@ -70,8 +72,9 @@ def main():
 
         # write_config('config_adcs.yaml', data[i]['lat'], data[i]['lon'], data[i]['alt'])  # Write LLA to YAML.
 
-    # If GPS is off, write data to the YAML from the previous TLE file adn the system time.
+    # If GPS is off, write data to the YAML from the previous TLE file and the system time.
     # Pull data from the YAML to construct a KOE array.
+    # Propagate somehow? @Ayush Rautwar
     else:
         # write_config('config_adcs.yaml', tle_get_data()) # Write TLE data to YAML.
         epoch = datetime.utcnow()
