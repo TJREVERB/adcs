@@ -14,6 +14,7 @@ from cart2kep import cart2kep
 
 import gps_dummy
 import tle_dummy
+import tle_points
 
 import time
 import numpy as np
@@ -61,34 +62,25 @@ def main():
 
     if gps_is_on():  # If we ask for GPS coordinates and the GPS respond:
         data = gps_dummy.get_data()  # Data is a list (cache) of dictionaries representing one timestep.
-        if gps_dummy.data_is_valid(data):
+        if gps_dummy.data_is_valid(data):  # If the data is valid:
             i = len(data)-1  # Get the last dictionary in the cache.
             r = [data[i]['x_pos'], data[i]['y_pos'], data[i]['z_pos']]  # Position state vector.
             vel = [data[i]['x_vel'], data[i]['y_vel'], data[i]['z_vel']]  # Velocity state vector.
             epoch = data[i]['time']  # Datetime object representing the epoch.
 
-            drag = data['adcs']['koe']['drag']  # Fixed drag coefficient.
             koe_array = cart2kep(r, vel)  # Convert state vectors into an array representing the KOE.
-            koe_array = np.append(koe_array, drag)  # Add the drag coefficient to the end of the array.
-            koe_array = np.insert(koe_array, 0, utc2jul(epoch))  # Add the Julian epoch to the beginning.
-            generate_tle(koe_array)  # Generate the new TLE.
+            koe_array = np.insert(koe_array, 0, epoch)  # Add the datetime epoch to the beginning.
+            tle_points.propagate(koe_array)  # Generate the new TLE.
         else:
-            tle_
+            tle_dummy.get_lla(datetime.utcnow())
         # If GPS is on and data is good, use GPS to make a KOE to make a TLE which replaces the reference TLE
         # that is used for propagation.
-
-
-
-
-
-
-        # write_config('config_adcs.yaml', data[i]['lat'], data[i]['lon'], data[i]['alt'])  # Write LLA to YAML.
 
     # If GPS is off, write data to the YAML from the previous TLE file and the system time.
     # Pull data from the YAML to construct a KOE array.
     # Propagate somehow? @Ayush Rautwar
     else:  # If we ask for GPS coordinates and the GPS not respond:
-
+        lla = tle_dummy.get_lla(datetime.utcnow())
         # Run Ayush's code to get the propogated TLE.
 
         # write_config('config_adcs.yaml', tle_get_data()) # Write TLE data to YAML.
