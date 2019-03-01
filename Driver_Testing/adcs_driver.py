@@ -11,7 +11,9 @@ from sunsensors import sunsensors
 from utc2jul import utc2jul
 from wrldmagm import wrldmagm
 from cart2kep import cart2kep
-from gps_dummy import gps_get_data
+
+import gps_dummy
+import tle_dummy
 
 import time
 import numpy as np
@@ -49,13 +51,6 @@ def tle_get_data():
 def generate_tle(koe):
     return {}
 
-def propogate(tle):
-    return None
-
-def gps_data_is_valid(data):
-    # if(np.norm(data)==23456789):
-    return True
-
 def main():
     global epoch
     config = load_config('config_adcs.yaml')  # Load the data from the YAML.
@@ -65,18 +60,20 @@ def main():
     # Write LLA and KOE data to the YAML file.
 
     if gps_is_on():  # If we ask for GPS coordinates and the GPS respond:
-        data = gps_get_data()  # Data is a list (cache) of dictionaries representing one timestep.
-        i = len(data)-1  # Get the last dictionary in the cache.
-        r = [data[i]['x_pos'], data[i]['y_pos'], data[i]['z_pos']]  # Position state vector.
-        vel = [data[i]['x_vel'], data[i]['y_vel'], data[i]['z_vel']]  # Velocity state vector.
-        epoch = data[i]['time']  # Datetime object representing the epoch.
+        data = gps_dummy.get_data()  # Data is a list (cache) of dictionaries representing one timestep.
+        if gps_dummy.data_is_valid(data):
+            i = len(data)-1  # Get the last dictionary in the cache.
+            r = [data[i]['x_pos'], data[i]['y_pos'], data[i]['z_pos']]  # Position state vector.
+            vel = [data[i]['x_vel'], data[i]['y_vel'], data[i]['z_vel']]  # Velocity state vector.
+            epoch = data[i]['time']  # Datetime object representing the epoch.
 
-        drag = data['adcs']['koe']['drag']  # Fixed drag coefficient.
-        koe_array = cart2kep(r, vel)  # Convert state vectors into an array representing the KOE.
-        koe_array = np.append(koe_array, drag)  # Add the drag coefficient to the end of the array.
-        koe_array = np.insert(koe_array, 0, utc2jul(epoch))  # Add the Julian epoch to the beginning.
-        generate_tle(koe_array)  # Generate the new TLE.
-
+            drag = data['adcs']['koe']['drag']  # Fixed drag coefficient.
+            koe_array = cart2kep(r, vel)  # Convert state vectors into an array representing the KOE.
+            koe_array = np.append(koe_array, drag)  # Add the drag coefficient to the end of the array.
+            koe_array = np.insert(koe_array, 0, utc2jul(epoch))  # Add the Julian epoch to the beginning.
+            generate_tle(koe_array)  # Generate the new TLE.
+        else:
+            tle_
         # If GPS is on and data is good, use GPS to make a KOE to make a TLE which replaces the reference TLE
         # that is used for propagation.
 
@@ -105,11 +102,6 @@ def main():
 
     # write_config('config_adcs.yaml', utc2jul(epoch))  # config['adcs']['sc']['jd0'] = utc2jul(epoch)
     gm = wrldmagm(config['adcs']['wrldmagm'])  # Instantiates the wrldmagm object.
-    """
-    lat = config['adcs']['lla']['lat']
-    lon = config['adcs']['lla']['lon']
-    alt = config['adcs']['lla']['alt']*3.28084  # Multiplying by 3.28084 converts meters to feet.
-    """
     magECEF = gm.wrldmagm(lat, lon, alt, decyear(datetime(2018, 1, 1)))
 
 
