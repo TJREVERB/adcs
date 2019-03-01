@@ -17,6 +17,8 @@
 
 import numpy as np
 import math
+from math import sin, pi, cos
+
 def sun_vec(start_day):
     # Julian days since Jan 0,1900
     #  Reference for this calculation is JD 2,415,020 which

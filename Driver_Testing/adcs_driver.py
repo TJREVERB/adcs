@@ -49,6 +49,13 @@ def tle_get_data():
 def generate_tle(koe):
     return {}
 
+def propogate(tle):
+    return None
+
+def gps_data_is_valid(data):
+    # if(np.norm(data)==23456789):
+    return True
+
 def main():
     global epoch
     config = load_config('config_adcs.yaml')  # Load the data from the YAML.
@@ -57,36 +64,52 @@ def main():
     # Generate a new TLE using the KOE.
     # Write LLA and KOE data to the YAML file.
 
-    if gps_is_on():
+    if gps_is_on():  # If we ask for GPS coordinates and the GPS respond:
         data = gps_get_data()  # Data is a list (cache) of dictionaries representing one timestep.
         i = len(data)-1  # Get the last dictionary in the cache.
         r = [data[i]['x_pos'], data[i]['y_pos'], data[i]['z_pos']]  # Position state vector.
         vel = [data[i]['x_vel'], data[i]['y_vel'], data[i]['z_vel']]  # Velocity state vector.
         epoch = data[i]['time']  # Datetime object representing the epoch.
-            
-        drag = 2.2  # Fixed drag coefficient.
+
+        drag = data['adcs']['koe']['drag']  # Fixed drag coefficient.
         koe_array = cart2kep(r, vel)  # Convert state vectors into an array representing the KOE.
         koe_array = np.append(koe_array, drag)  # Add the drag coefficient to the end of the array.
         koe_array = np.insert(koe_array, 0, utc2jul(epoch))  # Add the Julian epoch to the beginning.
         generate_tle(koe_array)  # Generate the new TLE.
+
+        # If GPS is on and data is good, use GPS to make a KOE to make a TLE which replaces the reference TLE
+        # that is used for propagation.
+
+
+
+
+
 
         # write_config('config_adcs.yaml', data[i]['lat'], data[i]['lon'], data[i]['alt'])  # Write LLA to YAML.
 
     # If GPS is off, write data to the YAML from the previous TLE file and the system time.
     # Pull data from the YAML to construct a KOE array.
     # Propagate somehow? @Ayush Rautwar
-    else:
+    else:  # If we ask for GPS coordinates and the GPS not respond:
+
+        # Run Ayush's code to get the propogated TLE.
+
         # write_config('config_adcs.yaml', tle_get_data()) # Write TLE data to YAML.
+
+        """
         epoch = datetime.utcnow()
         koe_array = np.array([utc2jul(epoch)])
         for key, val in config['adcs']['koe'].items():
             koe_array = np.append(koe_array, val)
+        """
 
     # write_config('config_adcs.yaml', utc2jul(epoch))  # config['adcs']['sc']['jd0'] = utc2jul(epoch)
     gm = wrldmagm(config['adcs']['wrldmagm'])  # Instantiates the wrldmagm object.
+    """
     lat = config['adcs']['lla']['lat']
     lon = config['adcs']['lla']['lon']
     alt = config['adcs']['lla']['alt']*3.28084  # Multiplying by 3.28084 converts meters to feet.
+    """
     magECEF = gm.wrldmagm(lat, lon, alt, decyear(datetime(2018, 1, 1)))
 
 

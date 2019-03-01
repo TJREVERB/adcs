@@ -12,12 +12,12 @@ adcs:
     tran: 312.21070
     drag: 2.2
   lla:
+    epch: 2458529.50
     lat: 5.33574
     lon: -134.83867
     alt: 396856.27533
   sc:
     inertia: [0.0108, 0.0108, 0.0108]
-    jd0: 2458529.50
   tledata:
     meananom: 0
     lastyear: 2019

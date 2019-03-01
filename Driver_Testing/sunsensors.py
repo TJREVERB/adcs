@@ -8,10 +8,18 @@
 
 import numpy as np
 import math
+from math import sin, cos
 
 def sunsensors(theta, phi, m):
-#   Finds largest input voltage from the 5 sun sensors
-#   Creates a unit sun vector in vehicle frame and rotates it based on which sunsensor was used
+    #   Finds largest input voltage from the 5 sun sensors
+    """
+    NO BUENO, NEED TO DO WEIGHT AVERAGING OF THE SUN SENSOR MEASUREMENTS
+    :param theta:
+    :param phi:
+    :param m:
+    :return:
+    """
+    #   Creates a unit sun vector in vehicle frame and rotates it based on which sunsensor was used
     I = np.argmax(m)
     th = theta[I]
     ph = phi[I]
@@ -30,4 +38,4 @@ def sunsensors(theta, phi, m):
         vec = np.matmul(temp, vec)
     elif I == 4: #+Z
         return vec
-    return vec;
+    return vec
