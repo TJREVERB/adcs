@@ -69,27 +69,26 @@ def main():
 
             koe_array = cart2kep(r, vel)  # Convert state vectors into an array representing the KOE.
             koe_array = np.insert(koe_array, 0, epoch)  # Add the datetime object epoch to the beginning.
-            koe_array = np.append(koe_array, data['adcs']['koe']['bstardrag'])  # Append the B-star drag coefficient
+            koe_array = np.append(koe_array, data['adcs']['tledata']['bstardrag'])  # Append the B-star drag coefficient
             temp_tle = tle_points.propagate(koe_array)  # Generate the new TLE.
 
-            propfile = open("tjreverb_tle.txt", "w")  # Open the propogation TLE for writing.
-            propfile.write(temp_tle)  # Write the new TLE to the propogation TLE
-            propfile.close()  # Close the file.
+            tjreverbtle = open("tjreverb_tle.txt", "w")  # Open the main TJREVERB TLE for writing.
+            tjreverbtle.write(temp_tle)  # Write the new TLE to TJREVERB TLE.
+            tjreverbtle.close()  # Close the file.
 
-            reffile = open("ref_tle.txt", "w")  # Since the TLE was taken from GPS data, update the reference TLE too.
-            reffile.write(temp_tle)
-            reffile.close()
+            backuptle = open("backup_tle.txt", "w")  # Backup the TLE data.
+            backuptle.write(temp_tle)
+            backuptle.close()
+
+            lla = tle_dummy.get_lla(epoch)  # Pull LLA data from TJREVERB TLE.
         else:  # If the GPS is on but the data is invalid:
             epoch = datetime.utcnow()  # Set current time to the system time.
-            lla = tle_dummy.get_lla(epoch)  # Uses PyOrbital to propogate the reference TLE, then returns its
-        # If GPS is on and data is good, use GPS to make a KOE to make a TLE which replaces the reference TLE
-        # that is used for propagation.
+            lla = tle_dummy.get_lla(epoch)  # Uses PyOrbital to propogate the TLE using epoch, which returns its LLA.
 
-    # If GPS is off, write data to the YAML from the previous TLE file and the system time.
-    # Pull data from the YAML to construct a KOE array.
+    # If GPS is off, use the system time and TJREVERB TLE to propogate the current LLA.
     else:  # If we ask for GPS coordinates and the GPS not respond:
         epoch = datetime.utcnow()  # Set current time to the system time.
-        lla = tle_dummy.get_lla(epoch)
+        lla = tle_dummy.get_lla(epoch)  # Uses PyOrbital to propogate the TLE using epoch, which returns its LLA.
         # Run Ayush's code to get the propogated TLE.
 
         # write_config('config_adcs.yaml', tle_get_data()) # Write TLE data to YAML.
