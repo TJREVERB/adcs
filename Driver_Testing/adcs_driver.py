@@ -89,21 +89,20 @@ def main():
     else:  # If we ask for GPS coordinates and the GPS not respond:
         epoch = datetime.utcnow()  # Set current time to the system time.
         lla = tle_dummy.get_lla(epoch)  # Uses PyOrbital to propogate the TLE using epoch, which returns its LLA.
-        # Run Ayush's code to get the propogated TLE.
-
-        # write_config('config_adcs.yaml', tle_get_data()) # Write TLE data to YAML.
-
-        """
-        epoch = datetime.utcnow()
-        koe_array = np.array([utc2jul(epoch)])
-        for key, val in config['adcs']['koe'].items():
-            koe_array = np.append(koe_array, val)
-        """
 
     # write_config('config_adcs.yaml', utc2jul(epoch))  # config['adcs']['sc']['jd0'] = utc2jul(epoch)
     gm = wrldmagm(config['adcs']['wrldmagm'])  # Instantiates the wrldmagm object.
-    magECEF = gm.wrldmagm(lat, lon, alt, decyear(datetime(2018, 1, 1)))
+    magECEF = gm.wrldmagm(lla['lat'], lla['lon'], lla['alt'], decyear(datetime(2018, 1, 1)))  # 
+    magECEF = np.squeeze(np.asarray(magECEF))
+    magECI = ecef2eci(magECEF, epoch)
 
+    bI = 1.0*(10e-09) * magECI  # Magnetic field in inertial frame.
+    bI = bI/np.linalg.norm(bI)
+    bI = np.asmatrix(bI)
+    bI = bI.getH()
+
+    sI = sun_vec(utc2jul(epoch)-utc2jul(datetime(1980, 1, 6, 0, 0, 0)))  # Sun vector in intertial frame.
+    sI = sI/np.linalg.norm(sI)  # Normalize sI.
 
 if __name__ == "__main__":
     t1 = threading.Thread(target=main, args=(), daemon=True)
