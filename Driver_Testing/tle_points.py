@@ -3,7 +3,14 @@ import re
 import time
 from datetime import datetime
 import math
+import yaml
 
+def load_config(config_file):
+	with open(config_file, 'r') as stream:
+		try:
+			return yaml.safe_load(stream)
+		except yaml.YAMLError as error:
+			print(error)
 
 def checksum(line):
 	hey = ''.join(filter(lambda x: x.isdigit() or x == "-", line)).replace(" ","")
@@ -17,6 +24,7 @@ def checksum(line):
 	return b%10
 
 def propagate(poskep):
+	config = load_config("config_adcs.yaml")
 	GM = 3.986004418*(10**14)
 	file = open("tjreverbtle.txt", "r")
 	lines = file.readlines()
@@ -58,9 +66,9 @@ def propagate(poskep):
 	meanmot = float(meanmot)
 
 
-	yamlmeananom = 0        #test values
-	yamllastyear = 2019     #test values
-	yamllastday = 43        #test values
+	yamlmeananom = config["adcs"]["tledata"]["meananom"]        #test values
+	yamllastyear = config["adcs"]["tledata"]["lastyear"]     #test values
+	yamllastday = config["adcs"]["tledata"]["lastday"]        #test values
 
 
 	if yamllastyear%4==0 and yamllastyear%100 !=0:
@@ -73,7 +81,7 @@ def propagate(poskep):
 	#write new mean anomaly, last year, and last day to config yaml file
 	#print(eachline[2][6])
 
-	yamlmeanmot = 15        #test value
+	yamlmeanmot = config["adcs"]["tledata"]["meanmot"]      #test value
 
 	firstd = (meanmot - yamlmeanmot)/((days*abs(yamllastyear-datetime.utcnow().year)+(float(parts[0]+"."+parts[1].split(".")[1])-yamllastday)))
 	firstd = firstd/2 #apparently tle is half of this
@@ -115,8 +123,9 @@ def propagate(poskep):
 					out = out+p+" "
 			out = out + "\n"
 	file.close()
-
-	upfile = open("tjreverbtle.txt","w") 
-	upfile.write(out) 
-	upfile.close() 
-
+	print(out)
+	#upfile = open("tjreverbtle.txt","w") 
+	#upfile.write(out) 
+	#upfile.close() 
+propagate([datetime(2019, 3, 7), 1.23423432, 1.23423432, 1.23423432, 1.23423432, 1.23423432, 1.23423432, 1.23423432, 1.23423432])
+	

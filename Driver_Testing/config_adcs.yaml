@@ -10,7 +10,7 @@ adcs:
     raan: 245.32261
     argp: 33.54134
     tran: 312.21070
-    drag: 2.2
+    bstardrag: 2.4
   lla:
     epch: 2458529.50
     lat: 5.33574
@@ -21,5 +21,6 @@ adcs:
   tledata:
     meananom: 0
     lastyear: 2019
+    lastday: 40.35
     meanmot: 15.5
   wrldmagm: "WMM.COF"
