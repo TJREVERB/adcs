@@ -70,7 +70,15 @@ def main():
             koe_array = cart2kep(r, vel)  # Convert state vectors into an array representing the KOE.
             koe_array = np.insert(koe_array, 0, epoch)  # Add the datetime object epoch to the beginning.
             koe_array = np.append(koe_array, data['adcs']['koe']['bstardrag'])  # Append the B-star drag coefficient
-            tle_points.propagate(koe_array)  # Generate the new TLE.
+            temp_tle = tle_points.propagate(koe_array)  # Generate the new TLE.
+
+            propfile = open("tjreverb_tle.txt", "w")  # Open the propogation TLE for writing.
+            propfile.write(temp_tle)  # Write the new TLE to the propogation TLE
+            propfile.close()  # Close the file.
+
+            reffile = open("ref_tle.txt", "w")  # Since the TLE was taken from GPS data, update the reference TLE too.
+            reffile.write(temp_tle)
+            reffile.close()
         else:  # If the GPS is on but the data is invalid:
             epoch = datetime.utcnow()  # Set current time to the system time.
             lla = tle_dummy.get_lla(epoch)  # Uses PyOrbital to propogate the reference TLE, then returns its
@@ -80,7 +88,7 @@ def main():
     # If GPS is off, write data to the YAML from the previous TLE file and the system time.
     # Pull data from the YAML to construct a KOE array.
     else:  # If we ask for GPS coordinates and the GPS not respond:
-        epoch = datetime.utcnow()
+        epoch = datetime.utcnow()  # Set current time to the system time.
         lla = tle_dummy.get_lla(epoch)
         # Run Ayush's code to get the propogated TLE.
 
