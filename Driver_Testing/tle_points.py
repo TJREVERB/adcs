@@ -26,7 +26,7 @@ def checksum(line):
 def propagate(poskep):
 	config = load_config("config_adcs.yaml")
 	GM = 3.986004418*(10**14)
-	file = open("tjreverbtle.txt", "r")
+	file = open("prop_tle.txt", "r")
 	lines = file.readlines()
 	eachline = list()
 	for line in lines:
@@ -124,7 +124,7 @@ def propagate(poskep):
 			out = out + "\n"
 	file.close()
 	print(out)
-	#upfile = open("tjreverbtle.txt","w") 
+	#upfile = open("prop_tle.txt","w") 
 	#upfile.write(out) 
 	#upfile.close() 
 propagate([datetime(2019, 3, 7), 1.23423432, 1.23423432, 1.23423432, 1.23423432, 1.23423432, 1.23423432, 1.23423432, 1.23423432])
