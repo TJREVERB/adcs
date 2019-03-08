@@ -22,7 +22,7 @@ from datetime import date
 
 class wrldmagm:
 
-    def wrldmagm(self, dlat, dlon, h, time=date.today()): # latitude (decimal degrees), longitude (decimal degrees), altitude (feet), date
+    def wrldmagm(self, dlat, dlon, h, time): # latitude (decimal degrees), longitude (decimal degrees), altitude (feet), date
         #time = date('Y') + date('z')/365
         time = time.year+((time - date(time.year,1,1)).days/365.0)
         alt = h/3280.8399

@@ -23,4 +23,7 @@ adcs:
     lastyear: 2019
     lastday: 40.35
     meanmot: 15.5
+  tlefiles:
+    tjreverb: "tjreverb_tle.txt"
+    backup: "backup_tle.txt"
   wrldmagm: "WMM.COF"

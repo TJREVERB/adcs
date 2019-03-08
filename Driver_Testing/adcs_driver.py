@@ -72,11 +72,11 @@ def main():
             koe_array = np.append(koe_array, data['adcs']['tledata']['bstardrag'])  # Append the B-star drag coefficient
             temp_tle = tle_points.propagate(koe_array)  # Generate the new TLE.
 
-            tjreverbtle = open("tjreverb_tle.txt", "w")  # Open the main TJREVERB TLE for writing.
+            tjreverbtle = open(config['adcs']['tlefiles']['tjreverb'], "w")  # Open the main TJREVERB TLE for writing.
             tjreverbtle.write(temp_tle)  # Write the new TLE to TJREVERB TLE.
             tjreverbtle.close()  # Close the file.
 
-            backuptle = open("backup_tle.txt", "w")  # Backup the TLE data.
+            backuptle = open(config['adcs']['tlefiles']['backup'], "w")  # Backup the TLE data.
             backuptle.write(temp_tle)
             backuptle.close()
 
@@ -92,17 +92,25 @@ def main():
 
     # write_config('config_adcs.yaml', utc2jul(epoch))  # config['adcs']['sc']['jd0'] = utc2jul(epoch)
     gm = wrldmagm(config['adcs']['wrldmagm'])  # Instantiates the wrldmagm object.
-    magECEF = gm.wrldmagm(lla['lat'], lla['lon'], lla['alt'], decyear(datetime(2018, 1, 1)))  # 
+
+    # Calculate the magnetic field vector in ECEF. Altitude is multiplied to convert meters to feet.
+    magECEF = gm.wrldmagm(lla['lat'], lla['lon'], lla['alt'] * 3.28084, date.today())
+
     magECEF = np.squeeze(np.asarray(magECEF))
     magECI = ecef2eci(magECEF, epoch)
 
-    bI = 1.0*(10e-09) * magECI  # Magnetic field in inertial frame.
+    bI = 1.0*(10e-09) * magECI  # Magnetic field in inertial frame, converts teslas to nanoteslas.
     bI = bI/np.linalg.norm(bI)
     bI = np.asmatrix(bI)
     bI = bI.getH()
 
     sI = sun_vec(utc2jul(epoch)-utc2jul(datetime(1980, 1, 6, 0, 0, 0)))  # Sun vector in intertial frame.
     sI = sI/np.linalg.norm(sI)  # Normalize sI.
+
+    print(bI)
+    print(sI)
+
+    # bV and sV data are taken from the onboard magnetometer and sunsensors.
 
 if __name__ == "__main__":
     t1 = threading.Thread(target=main, args=(), daemon=True)
