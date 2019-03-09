@@ -68,11 +68,15 @@ def main():
             epoch = data[i]['time']  # Datetime object representing the epoch.
 
             koe_array = cart2kep(r, vel)  # Convert state vectors into an array representing the KOE.
-            koe_array = np.insert(koe_array, 0, epoch)  # Add the datetime object epoch to the beginning.
-            koe_array = np.append(koe_array, data['adcs']['tledata']['bstardrag'])  # Append the B-star drag coefficient
-            temp_tle = tle_points.propagate(koe_array)  # Generate the new TLE.
-
-            print(koe_array)
+            koe_list = koe_array.tolist()
+            #koe_array = np.insert(koe_array, 0, epoch)  # Add the datetime object epoch to the beginning.
+            koe_list.insert(0, epoch)
+            #koe_array = np.append(koe_array, data['adcs']['tledata']['bstardrag'])  # Append the B-star drag coefficient
+            koe_list.append(config['adcs']['koe']['bstardrag']) #TODO: not sure what you were doing here, Jason, you had ['adcs']['tledata']['bstardrag'] which doesn't make sense
+            temp_tle = tle_points.propagate(koe_list)  # Generate the new TLE.
+            #TODO: at some point you need to update the config file koe section, I think it is a good idea to keep it
+            #print(koe_array)
+            print(koe_list)
             print(temp_tle)
             
             # tjreverbtle = open(config['adcs']['tlefiles']['tjreverb'], "w")  # Open the main TJREVERB TLE for writing.

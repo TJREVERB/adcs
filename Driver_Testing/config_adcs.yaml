@@ -10,7 +10,7 @@ adcs:
     raan: 245.32261
     argp: 33.54134
     tran: 312.21070
-    bstardrag: 2.4
+    bstardrag: 0.000068825
   lla:
     epch: 2458529.50
     lat: 5.33574

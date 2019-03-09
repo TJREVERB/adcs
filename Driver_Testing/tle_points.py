@@ -4,6 +4,7 @@ import time
 from datetime import datetime
 import math
 import yaml
+from decimal import Decimal
 
 def load_config(config_file):
 	with open(config_file, 'r') as stream:
@@ -96,7 +97,7 @@ def propagate(poskep):
 	eachline[1][5] = " 00000-0"
 	#print (eachline[1][5])
 
-	bstar = "{:.5E}".format(Decimal(str(config["adcs"]["drag"]["bstardrag"]))).split("E")
+	bstar = "{:.5E}".format(Decimal(str(config["adcs"]["koe"]["bstardrag"]))).split("E")
 	bstar[0]= bstar[0].replace(".","")
 	bstar[1]= str(int(bstar[1])+1)
 	eachline[1][6] = " "+bstar[0][0:5]+bstar[1]
@@ -134,5 +135,5 @@ def propagate(poskep):
 	#upfile.write(out) 
 	#upfile.close() 
 
-#propagate([datetime(2019, 3, 7), 1.23423432, 1.23423432, 1.23423432, 1.23423432, 1.23423432, 1.23423432, 1.23423432, 1.23423432])
+#propagate([datetime.utcnow(), 1.23423432, .0014246, 1.23423432, 1.23423432, 1.23423432, 312.21070, 1.23423432, 1.23423432])
 	
