@@ -77,15 +77,18 @@ def propagate(poskep):
 		days = 365
 
 	#E = (float)(2*math.atan(math.tan(poskep[6]/2)/((1+poskep[2])/(1-poskep[2])**(1/2))))
-	E = 2*math.atan(math.tan((poskep[6]/180*math.pi)/2)/math.sqrt((1+poskep[2])/(1-poskep[2])))
-	meananom = E - poskep[2]*math.sin(E) #meananomaly = oldmeananomaly + meanmotion * dayssincelasttime
+	E = 2*math.atan2(math.tan((poskep[6]/180*math.pi)/2), math.sqrt((1+poskep[2])/(1-poskep[2])))
+	E = (E + 2*math.pi) % (2*math.pi) #make sure E is positive
+	meananom = E - poskep[2]*math.sin(E) #meananomaly = Eanom - e*sin(Eanom)
+	meananom = meananom/math.pi*180 #convert to degrees
+	#print (E)
 	eachline[2][6] = str(meananom).lstrip('0').split(".")[0].rjust(3, " ") + "." + str(round(meananom, 4)).split(".")[1].ljust(4, '0')
 	#write new mean anomaly, last year, and last day to config yaml file
 	#print(eachline[2][6])
 
 	yamlmeanmot = config["adcs"]["tledata"]["meanmot"]      #test value
 
-	firstd = (meanmot - yamlmeanmot)/((days*abs(yamllastyear-datetime.utcnow().year)+(float(parts[0]+"."+parts[1].split(".")[1])-yamllastday)))
+	firstd = (meanmot - yamlmeanmot)/((days*abs(yamllastyear-d.year)+(float(parts[0]+"."+parts[1].split(".")[1])-yamllastday)))
 	firstd = firstd/2 #apparently tle is half of this
 	#write meanmot to yaml
 	randomsign = ""
@@ -135,5 +138,5 @@ def propagate(poskep):
 	#upfile.write(out) 
 	#upfile.close() 
 
-#propagate([datetime.utcnow(), 1.23423432, .0014246, 1.23423432, 1.23423432, 1.23423432, 312.21070, 1.23423432, 1.23423432])
+#propagate([datetime.utcnow(), 4344402.262071658,  0.0008799, 3.731724069345286, 1.0714496051147666, 1.8057985603867024, 270, 6.8825e-05])
 	
