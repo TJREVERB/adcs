@@ -97,7 +97,7 @@ def main():
     gm = wrldmagm(config['adcs']['wrldmagm'])  # Instantiates the wrldmagm object.
 
     # Calculate the magnetic field vector in ECEF. Altitude is multiplied to convert meters to feet.
-    magECEF = gm.wrldmagm(lla['lat'], lla['lon'], lla['alt'] * 3.28084, date.today())
+    magECEF = gm.wrldmagm(lla['lat'], lla['lon'], lla['alt'], date.today())
 
     magECEF = np.squeeze(np.asarray(magECEF))
     magECI = ecef2eci(magECEF, epoch)
