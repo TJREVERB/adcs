@@ -44,7 +44,7 @@ def write_config(config_file, data):
             print(error)
 
 def gps_is_on():
-    return False
+    return True
 
 def tle_get_data():
     return {}
@@ -72,9 +72,12 @@ def main():
             koe_array = np.append(koe_array, data['adcs']['tledata']['bstardrag'])  # Append the B-star drag coefficient
             temp_tle = tle_points.propagate(koe_array)  # Generate the new TLE.
 
-            tjreverbtle = open(config['adcs']['tlefiles']['tjreverb'], "w")  # Open the main TJREVERB TLE for writing.
-            tjreverbtle.write(temp_tle)  # Write the new TLE to TJREVERB TLE.
-            tjreverbtle.close()  # Close the file.
+            print(koe_array)
+            print(temp_tle)
+            
+            # tjreverbtle = open(config['adcs']['tlefiles']['tjreverb'], "w")  # Open the main TJREVERB TLE for writing.
+            # tjreverbtle.write(temp_tle)  # Write the new TLE to TJREVERB TLE.
+            # tjreverbtle.close()  # Close the file.
 
             backuptle = open(config['adcs']['tlefiles']['backup'], "w")  # Backup the TLE data.
             backuptle.write(temp_tle)
@@ -113,7 +116,9 @@ def main():
     # bV and sV data are taken from the onboard magnetometer and sunsensors.
 
 if __name__ == "__main__":
+    start = time.time()
     t1 = threading.Thread(target=main, args=(), daemon=True)
     t1.start()
     t1.join()
-    print("Calculation complete for " + epoch.strftime("%Y-%m-%d %H:%M:%S") + " UTC.")
+    print("Calculation complete for ", epoch.strftime("%Y-%m-%d %H:%M:%S"), " UTC.")
+    print("Elapsed time: ", round(time.time()-start, 3), "sec")

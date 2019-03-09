@@ -62,7 +62,7 @@ def cart2kep(r, vel):
     a = 1/(2/np.linalg.norm(r) - (np.linalg.norm(vel)**2)/GM)
     return np.array([a, escalar, w, l, i, m])
 
-r = [3000000., 5000000., 1000000.]
-vel = [3000., 3000., 5000.]
-print(cart2kep(r, vel))
+# r = [3000000., 5000000., 1000000.]
+# vel = [3000., 3000., 5000.]
+# print(cart2kep(r, vel))
 
