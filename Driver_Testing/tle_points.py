@@ -66,7 +66,6 @@ def propagate(poskep):
 	meanmot = float(meanmot)
 
 
-	yamlmeananom = config["adcs"]["tledata"]["meananom"]        #test values
 	yamllastyear = config["adcs"]["tledata"]["lastyear"]     #test values
 	yamllastday = config["adcs"]["tledata"]["lastday"]        #test values
 
@@ -76,7 +75,9 @@ def propagate(poskep):
 	else:
 		days = 365
 
-	meananom = yamlmeananom + meanmot*(days*abs(yamllastyear-datetime.utcnow().year)+(float(parts[0]+"."+parts[1].split(".")[1])-yamllastday)) #meananomaly = oldmeananomaly + meanmotion * dayssincelasttime
+	#E = (float)(2*math.atan(math.tan(poskep[6]/2)/((1+poskep[2])/(1-poskep[2])**(1/2))))
+	E = 2*math.atan(math.tan((poskep[6]/180*math.pi)/2)/math.sqrt((1+poskep[2])/(1-poskep[2])))
+	meananom = E - poskep[2]*math.sin(E) #meananomaly = oldmeananomaly + meanmotion * dayssincelasttime
 	eachline[2][6] = str(meananom).lstrip('0').split(".")[0].rjust(3, " ") + "." + str(round(meananom, 4)).split(".")[1].ljust(4, '0')
 	#write new mean anomaly, last year, and last day to config yaml file
 	#print(eachline[2][6])
@@ -95,6 +96,11 @@ def propagate(poskep):
 	eachline[1][5] = " 00000-0"
 	#print (eachline[1][5])
 
+	bstar = "{:.5E}".format(Decimal(str(config["adcs"]["drag"]["bstardrag"]))).split("E")
+	bstar[0]= bstar[0].replace(".","")
+	bstar[1]= str(int(bstar[1])+1)
+	eachline[1][6] = " "+bstar[0][0:5]+bstar[1]
+	
 	eachline[1][7] = "0"
 	#print (eachline[1][7])
 
@@ -127,5 +133,6 @@ def propagate(poskep):
 	#upfile = open("tjreverb_tle.txt","w") 
 	#upfile.write(out) 
 	#upfile.close() 
+
 #propagate([datetime(2019, 3, 7), 1.23423432, 1.23423432, 1.23423432, 1.23423432, 1.23423432, 1.23423432, 1.23423432, 1.23423432])
 	
