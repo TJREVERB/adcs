@@ -122,7 +122,7 @@ def propagate(poskep):
 	c2 = str(checksum(lines[1]))
 	eachline[2][7]=eachline[2][7]+c2
 	#print(eachline[2][7])
-	eachline[1][6]=" "+eachline[1][6]
+	
 	#print(eachline[2])
 	#print(eachline)
 	eachline[1][2] = eachline[1][2]+"  "
