@@ -33,7 +33,7 @@ def propagate(poskep):
 		eachline.append(line.split())
 	d = poskep[0]
 	#print(eachline[1][3])
-	edays = str(round((d-datetime(2019, 1, 1, 0)).total_seconds()/(24*60*60)+1, 8))
+	edays = str(round((d-datetime(datetime.utcnow().year, 1, 1, 0)).total_seconds()/(24*60*60)+1, 8))
 	parts = edays.split(".")
 	parts[0] = parts[0].rjust(3, '0')
 	parts[1] = '{:.8f}'.format(float("."+parts[1]))
