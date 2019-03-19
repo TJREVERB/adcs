@@ -18,11 +18,14 @@ adcs:
     alt: 396856.27533
   sc:
     inertia: [0.0108, 0.0108, 0.0108]
+    bstardrag: 0.000068825
   tledata:
     meananom: 0
     lastyear: 2019
     lastday: 40.35
     meanmot: 15.5
+    oldargp: 2
+    revnum: 1
   tlefiles:
     tjreverb: "tjreverb_tle.txt"
     backup: "backup_tle.txt"

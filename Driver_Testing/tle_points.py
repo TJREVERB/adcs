@@ -100,7 +100,7 @@ def propagate(poskep):
 	eachline[1][5] = " 00000-0"
 	#print (eachline[1][5])
 
-	bstar = "{:.5E}".format(Decimal(str(config["adcs"]["koe"]["bstardrag"]))).split("E")
+	bstar = "{:.5E}".format(Decimal(str(poskep[7]))).split("E")
 	bstar[0]= bstar[0].replace(".","")
 	bstar[1]= str(int(bstar[1])+1)
 	eachline[1][6] = " "+bstar[0][0:5]+bstar[1]
@@ -108,7 +108,7 @@ def propagate(poskep):
 	eachline[1][7] = "0"
 	#print (eachline[1][7])
 
-	yamlrevnum = "1" #test value
+	yamlrevnum = str(config['adcs']['tledata']['revnum']) #test value
 
 	eachline[2][7]=m1+yamlrevnum.rjust(5, '0')
 	#every time mean anomaly is 0 update yamlrevnum+1

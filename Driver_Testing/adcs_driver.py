@@ -72,10 +72,11 @@ def main():
             #koe_array = np.insert(koe_array, 0, epoch)  # Add the datetime object epoch to the beginning.
             koe_list.insert(0, epoch)
             #koe_array = np.append(koe_array, data['adcs']['tledata']['bstardrag'])  # Append the B-star drag coefficient
-            koe_list.append(config['adcs']['koe']['bstardrag']) #TODO: not sure what you were doing here, Jason, you had ['adcs']['tledata']['bstardrag'] which doesn't make sense
+            koe_list.append(config['adcs']['sc']['bstardrag']) #TODO: not sure what you were doing here, Jason, you had ['adcs']['tledata']['bstardrag'] which doesn't make sense
             temp_tle = tle_points.propagate(koe_list)  # Generate the new TLE.
             #TODO: at some point you need to update the config file koe section, I think it is a good idea to keep it
             #print(koe_array)
+
             print(koe_list)
             print(temp_tle)
             
@@ -96,6 +97,15 @@ def main():
     else:  # If we ask for GPS coordinates and the GPS not respond:
         epoch = datetime.utcnow()  # Set current time to the system time.
         lla = tle_dummy.get_lla(epoch)  # Uses PyOrbital to propogate the TLE using epoch, which returns its LLA.
+
+    # needed to incremement revnum
+    # print(tle_dummy.get_xyz(epoch)['xyz_pos']) 
+    # print(tle_dummy.get_xyz(epoch)['xyz_vel'])
+    # poskep = cart2kep(tle_dummy.get_xyz(epoch)['xyz_pos'], tle_dummy.get_xyz(epoch)['xyz_vel'])
+    # print(poskep)
+    # if (poskep[4]>0 and config['adcs']['tledata']['oldargp']<=0):
+    #     config['adcs']['tledata']['revnum']=config['adcs']['tledata']['revnum']+1
+    # config['adcs']['tledata']['oldargp'] = poskep[4]
 
     # write_config('config_adcs.yaml', utc2jul(epoch))  # config['adcs']['sc']['jd0'] = utc2jul(epoch)
     gm = wrldmagm(config['adcs']['wrldmagm'])  # Instantiates the wrldmagm object.
