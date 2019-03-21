@@ -72,7 +72,7 @@ def main():
             #koe_array = np.insert(koe_array, 0, epoch)  # Add the datetime object epoch to the beginning.
             koe_list.insert(0, epoch)
             #koe_array = np.append(koe_array, data['adcs']['tledata']['bstardrag'])  # Append the B-star drag coefficient
-            koe_list.append(config['adcs']['sc']['bstardrag']) #TODO: not sure what you were doing here, Jason, you had ['adcs']['tledata']['bstardrag'] which doesn't make sense
+            koe_list.append(config['adcs']['sc']['bstardrag'])
             temp_tle = tle_points.propagate(koe_list)  # Generate the new TLE.
             #TODO: at some point you need to update the config file koe section, I think it is a good idea to keep it
             #print(koe_array)
@@ -104,7 +104,13 @@ def main():
     # poskep = cart2kep(tle_dummy.get_xyz(epoch)['xyz_pos'], tle_dummy.get_xyz(epoch)['xyz_vel'])
     # print(poskep)
     # if (poskep[4]>0 and config['adcs']['tledata']['oldargp']<=0):
-    #     config['adcs']['tledata']['revnum']=config['adcs']['tledata']['revnum']+1
+    #     with open("config_adcs.yaml") as f:
+    #         list_doc = yaml.load(f)
+    #     #print(type(list_doc))
+    #     list_doc['adcs']['tledata']['revnum']=list_doc['adcs']['tledata']['revnum']+1
+    #     with open("config_adcs.yaml", "w") as f:
+    #         yaml.dump(list_doc, f, default_flow_style=False)
+    # config = load_config('config_adcs.yaml')
     # config['adcs']['tledata']['oldargp'] = poskep[4]
 
     # write_config('config_adcs.yaml', utc2jul(epoch))  # config['adcs']['sc']['jd0'] = utc2jul(epoch)
@@ -128,6 +134,10 @@ def main():
     print(sI)
 
     # bV and sV data are taken from the onboard magnetometer and sunsensors.
+
+    # DCM = getDCM.getDCM(bV, sV, bI, sI)
+    # 
+
 
 if __name__ == "__main__":
     start = time.time()
