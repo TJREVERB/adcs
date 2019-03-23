@@ -1,6 +1,6 @@
 import math
 import numpy as np
-def dcm2q(dcm):
+def dcm_to_q(dcm):
     q4 = .5*math.sqrt(1+dcm[0][0]+dcm[1][1]+dcm[2][2])
     q1 = (1/(4*q4))*(dcm[1][2]-dcm[2][1])
     q2 = (1/(4*q4))*(dcm[2][0]-dcm[0][2])
