@@ -1,4 +1,4 @@
-def qinv(qin):
+def q_inv(qin):
   q = []
   q.append(-1*qin[0])
   q.append(-1*qin[1])
