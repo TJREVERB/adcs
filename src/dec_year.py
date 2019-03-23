@@ -1,8 +1,9 @@
 from datetime import datetime
 import time
 
-def decyear(date):
-    def sinceEpoch(date): # returns seconds since epoch
+
+def dec_year(date):
+    def sinceEpoch(date):  # returns seconds since epoch
         return time.mktime(date.timetuple())
     s = sinceEpoch
 
@@ -16,4 +17,4 @@ def decyear(date):
 
     return date.year + fraction
 
-#print(decyear(datetime.today()))
+# print(dec_year(datetime.today()))

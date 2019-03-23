@@ -7,10 +7,10 @@
 #   Bryan Zhang 11/30/2018
 
 import numpy as np
-import math
 from math import sin, cos
 
-def sunsensors(theta, phi, m):
+
+def sun_sensors(theta, phi, m):
     #   Finds largest input voltage from the 5 sun sensors
     """
     NO BUENO, NEED TO DO WEIGHT AVERAGING OF THE SUN SENSOR MEASUREMENTS
@@ -23,19 +23,20 @@ def sunsensors(theta, phi, m):
     I = np.argmax(m)
     th = theta[I]
     ph = phi[I]
-    vec = np.array([[sin(th)*cos(ph)],[sin(th)*sin(ph)],[cos(th)]], np.float32);
-    if I == 0: #+X
+    vec = np.array(
+        [[sin(th)*cos(ph)], [sin(th)*sin(ph)], [cos(th)]], np.float32)
+    if I == 0:  # +X
         temp = np.array([[1, 0, 0], [0, 0, 1], [0, -1, 0]])
         vec = np.matmul(temp, vec)
-    elif I == 1: #-X
+    elif I == 1:  # -X
         temp = np.array([[1, 0, 0], [0, 0, -1], [0, 1, 0]])
         vec = np.matmul(temp, vec)
-    elif I == 2: #+y
+    elif I == 2:  # +y
         temp = np.array([[-1, 0, 0], [0, 1, 0], [1, 0, 0]])
         vec = np.matmul(temp, vec)
-    elif I == 3: #-Y
+    elif I == 3:  # -Y
         temp = np.array([[0, 0, 1], [0, 1, 0], [-1, 0, 0]])
         vec = np.matmul(temp, vec)
-    elif I == 4: #+Z
+    elif I == 4:  # +Z
         return vec
     return vec

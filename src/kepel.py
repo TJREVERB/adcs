@@ -6,7 +6,7 @@ meters. All angles in radians. r and v MUST BE numpy arrays.
 Returns an array, KOE.
 Retrieved from:
 https://github.com/RazerM/orbital/blob/0.7.0/orbital/utilities.py#L252
-Refer to kep2cart.py for orbitalpy and astropy installation instructions.
+Refer to kep_to_cart.py for orbitalpy and astropy installation instructions.
 Created by Jason Chen 10/8/18
 """
 import numpy as np
@@ -14,10 +14,8 @@ import math
 from numpy import dot, arccos as acos
 from numpy.linalg import norm
 from scipy.constants import pi
-from math import radians
-from orbital import KeplerianElements, elements, utilities, earth
-from orbital.utilities import (Position, Velocity, angular_momentum,
-    node_vector, eccentricity_vector, specific_orbital_energy)
+from orbital.utilities import angular_momentum, node_vector, eccentricity_vector, specific_orbital_energy
+
 
 def kepel(r, v):
     mu = 3.986004415E+14
@@ -75,7 +73,7 @@ def kepel(r, v):
         f = acos(dot(ev, r) / (norm(ev) * norm(r)))
         if dot(r, v) < 0:
             f = 2 * pi - f
-    KOE = np.array([a,e,i,raan,arg_pe,f])
+    KOE = np.array([a, e, i, raan, arg_pe, f])
     return KOE
 
 # Sample Run:

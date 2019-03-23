@@ -1,9 +1,9 @@
-# INPUTS: Cartesian state vectors:   
+# INPUTS: Cartesian state vectors:
 # Position: r(t)
 # Velocity: dr/dt
 # Gravitational constant
 # Mass of earth
-# 
+#
 # OUTPUTS: Keplarian elements [a escalar w l i m]
 # Semi-major axis, a
 # Eccentricity, e
@@ -16,15 +16,18 @@
 import numpy as np
 import math
 
-def cart2kep(r, vel):
+
+def cart_to_kep(r, vel):
     r = [float(i) for i in r]
     vel = [float(i) for i in vel]
-    G = 6.67408 * (10**(-11)) # Gravitational constant(N kg^-2 m^2)
-    M = 5.9722 * (10**(24)) # Mass of Earth (kg)
-    GM = G*M # Constant parameter
-    k = np.array([0, 0, 1]) # Constant (z-axis) used with angular momentum to calculate ascending node
-    h = np.cross(r, vel) # Orbital momentum (without mass dimension): r cross vel
-    n = np.cross(k, h) # Vector from Earth center to ascending node
+    G = 6.67408 * (10**(-11))  # Gravitational constant(N kg^-2 m^2)
+    M = 5.9722 * (10**(24))  # Mass of Earth (kg)
+    GM = G*M  # Constant parameter
+    # Constant (z-axis) used with angular momentum to calculate ascending node
+    k = np.array([0, 0, 1])
+    # Orbital momentum (without mass dimension): r cross vel
+    h = np.cross(r, vel)
+    n = np.cross(k, h)  # Vector from Earth center to ascending node
 
     # Eccentricity vector and eccentricity: (e, escalar)
     e = np.cross(vel, h)/GM - r/np.linalg.norm(r)
@@ -32,9 +35,10 @@ def cart2kep(r, vel):
 
     # True anomaly: (v)
     if np.dot(r, vel) >= 0:
-        v = math.acos(np.dot(e,r)/(np.linalg.norm(e) * np.linalg.norm(r)))
+        v = math.acos(np.dot(e, r)/(np.linalg.norm(e) * np.linalg.norm(r)))
     else:
-        v = 2*np.pi - math.acos(np.dot(e,r)/(np.linalg.norm(e) * np.linalg.norm(r)))
+        v = 2*np.pi - math.acos(np.dot(e, r) /
+                                (np.linalg.norm(e) * np.linalg.norm(r)))
 
     # Inclination: (i)
     i = math.acos(h[2]/np.linalg.norm(h))
@@ -48,13 +52,14 @@ def cart2kep(r, vel):
         l = math.acos(n[0]/np.linalg.norm(n))
     else:
         l = 2*math.pi - math.acos(n[0]/np.linalg.norm(n))
-    
+
     # Argument of periapsis: (w)
     if e[2] >= 0:
-        w = math.acos(np.dot(n,e)/(np.linalg.norm(n) * np.linalg.norm(e)))
+        w = math.acos(np.dot(n, e)/(np.linalg.norm(n) * np.linalg.norm(e)))
     else:
-        w = 2*math.pi - math.acos(np.dot(n,e)/(np.linalg.norm(n) * np.linalg.norm(e)))
-    
+        w = 2*math.pi - math.acos(np.dot(n, e) /
+                                  (np.linalg.norm(n) * np.linalg.norm(e)))
+
     # Mean anomaly: (m)
     m = E - escalar*math.sin(E)
 
@@ -64,5 +69,4 @@ def cart2kep(r, vel):
 
 # r = [3000000., 5000000., 1000000.]
 # vel = [3000., 3000., 5000.]
-# print(cart2kep(r, vel))
-
+# print(cart_to_kep(r, vel))
