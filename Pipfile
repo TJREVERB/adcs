@@ -1,0 +1,17 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+pynmea2 = "*"
+pyyaml = "*"
+numpy = "*"
+pymap3d = "*"
+orbitalpy = "*"
+pyorbital = "*"
+
+[requires]
+python_version = "3.7"
