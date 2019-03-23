@@ -1,6 +1,7 @@
 # BEING WORKED ON BY AYUSH
 import numpy as np
 from .get_dcm import get_dcm
+from .q_mult import q_mult
 from numpy import linalg as LA
 import math
 
@@ -33,14 +34,3 @@ def get_qref_sun(poskep):
     qref = np.matrix([[vecu*math.sin((alpha/2)*math.pi/180)],
                       [math.cos((alpha/2)*math.pi/180)]])
     return qref
-
-
-def qmult(q1, q2):
-    q1 = np.squeeze(np.asarray(q1))
-    q2 = np.squeeze(np.asarray(q2))
-    q1 = q1.reshape(-1, 1)
-    q2 = q2.reshape(-1, 1)
-    comp1 = np.matrix([[q2.item(3), q2.item(2), -q2.item(1), q2.item(0)], [-q2.item(2), q2.item(3), q2.item(0), q2.item(1)],
-                       [q2.item(1), -q2.item(0), q2.item(3), q2.item(2)], [-q2.item(0), -q2.item(1), -q2.item(2), q2.item(3)]])
-    comp2 = np.matrix([[q1.item(0)], [q1.item(1)], [q1.item(2)], [q1.item(3)]])
-    return (comp1*comp2).getH()
