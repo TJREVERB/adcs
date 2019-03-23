@@ -10,6 +10,8 @@ from .sun_sensors import sun_sensors
 from .utc_to_jul import utc_to_jul
 from .wrldmagm import WrldMagM
 from .cart_to_kep import cart_to_kep
+from .get_mc import get_mc
+from .dcm_to_q import dcm_to_q
 from core import load_config
 
 from . import gps_dummy
@@ -133,15 +135,15 @@ def start():
 
     # bV and sV data are taken from the onboard magnetometer and sunsensors.
 
-    # dcm = getDCM.getDCM(bV, sV, bI, sI)
-    # q = dcm2q(dcm)
+    # dcm = get_dcm(bV, sV, bI, sI)
+    # q = dcm_to_q(dcm)
     # qref = getqref(poskep)                           
     # qerr = getqerr(q,qref)                              
     # thetaerr = getthetaerr(qerr)
     # mmax = [.1,.1,.1]
     # mtrans = np.matrix([[1,0,0],[0,1,0],[0,0,1]])
     # ctorque = np.matrix([0,0,0])
-    # magdip = getMC(ctorque.getH(),bV,mmax,mtrans)
+    # magdip = get_mc(ctorque.getH(),bV,mmax,mtrans)
     # ctprod = cross(magdip,bV)
 
     # isisimtq.k_imtq_start_actuation_dipole(imtq_axis_data(magdip[0], magdip[1], magdip[2]), 800)
