@@ -1,4 +1,4 @@
-def getthetaerr(q):
+def get_theta_err(q):
   q = q.getH()
   thetaerr = 2*(q[0:3]/q[4])
   return thetaerr
