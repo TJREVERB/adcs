@@ -6,7 +6,7 @@ from numpy import linalg as LA
 import math
 
 
-def get_qref_nadir(poskep):
+def get_q_ref_nadir(poskep):
     for i in range(2, 6):
         poskep[0, i] = poskep[0, i]*math.pi/180
     q1 = np.matrix([0, 0, math.sin(poskep[0, 3]/2), math.cos(poskep[0, 3]/2)])
@@ -21,7 +21,7 @@ def get_qref_nadir(poskep):
     return qref
 
 
-def get_qref_sun(poskep):
+def get_q_ref_sun(poskep):
     for i in range(2, 6):
         poskep[0, i] = poskep[0, i]*math.pi/180
     sun = sunsensors()  # return column vector
