@@ -4,8 +4,6 @@ from .get_q_ref
 from .get_dcm import get_dcm
 from .kep_to_cart import kep_to_cart
 from .dec_year import dec_year
-from .kepel import kepel
-from .q_to_dcm import q_to_dcm
 from .sun_vec import sun_vec
 from .sun_sensors import sun_sensors
 from .utc_to_jul import utc_to_jul
@@ -30,15 +28,6 @@ logger = logging.Logger("ADCS")
 
 def gps_is_on():
     return True
-
-
-def tle_get_data():
-    return {}
-
-
-def generate_tle(koe):
-    return {}
-
 
 def start():
     global epoch
@@ -66,11 +55,9 @@ def start():
             # koe_array = np.append(koe_array, data['adcs']['tledata']['bstardrag'])  # Append the B-star drag coefficient
             koe_list.append(config['adcs']['sc']['bstardrag'])
             temp_tle = tle_points.propagate(koe_list)  # Generate the new TLE.
-            # TODO: at some point you need to update the config file koe section, I think it is a good idea to keep it
-            # print(koe_array)
 
-            print(koe_list)
-            print(temp_tle)
+            # print(koe_list)
+            # print(temp_tle)
 
             # tjreverbtle = open(config['adcs']['tlefiles']['tjreverb'], "w")  # Open the main TJREVERB TLE for writing.
             # tjreverbtle.write(temp_tle)  # Write the new TLE to TJREVERB TLE.
