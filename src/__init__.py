@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from .get_q_ref
 from .get_dcm import get_dcm
 from .kep_to_cart import kep_to_cart
 from .dec_year import dec_year
@@ -137,9 +138,9 @@ def start():
 
     # dcm = get_dcm(bV, sV, bI, sI)
     # q = dcm_to_q(dcm)
-    # qref = getqref(poskep)                           
-    # qerr = getqerr(q,qref)                              
-    # thetaerr = getthetaerr(qerr)
+    # qref = get_q_ref.get_q_ref(poskep)                           
+    # qerr = get_q_err(q,qref)                              
+    # thetaerr = get_theta_err(qerr)
     # mmax = [.1,.1,.1]
     # mtrans = np.matrix([[1,0,0],[0,1,0],[0,0,1]])
     # ctorque = np.matrix([0,0,0])
