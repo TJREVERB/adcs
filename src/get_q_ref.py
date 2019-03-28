@@ -24,7 +24,7 @@ def get_q_ref_nadir(poskep):
 def get_q_ref_sun(poskep):
     for i in range(2, 6):
         poskep[0, i] = poskep[0, i]*math.pi/180
-    sun = sunsensors()  # return column vector
+    sun = sunsensor()  # return column vector
     z = getDCM(bV, sV, bI, sI) * np.matrix([0, 0, 1]).getH()
     vecu = np.cross(sun, z)
     uma = LA.norm(vecu)
