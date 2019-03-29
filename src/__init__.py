@@ -134,4 +134,4 @@ def start():
     # magdip = get_mc(ctorque.getH(),bV,mmax,mtrans)
     # ctprod = np.cross(magdip,bV)
 
-    # isisimtq.k_imtq_start_actuation_dipole(imtq_axis_data(magdip[0], magdip[1], magdip[2]), 800)
+    # isisimtq.py_k_imtq_start_actuation_dipole(imtq_axis_data(magdip[0], magdip[1], magdip[2]), 800)
