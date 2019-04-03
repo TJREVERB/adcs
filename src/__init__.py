@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from .get_q_ref
+from .get_q_ref import *
 from .get_dcm import get_dcm
 from .kep_to_cart import kep_to_cart
 from .dec_year import dec_year
