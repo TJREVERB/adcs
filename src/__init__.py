@@ -2,6 +2,8 @@ from pathlib import Path
 
 from .get_q_ref import *
 from .get_dcm import get_dcm
+from .get_theta_err import get_theta_err
+from .get_q_err import get_q_err
 from .kep_to_cart import kep_to_cart
 from .dec_year import dec_year
 from .sun_vec import sun_vec
@@ -101,7 +103,7 @@ def start():
     for j in tle_dummy.get_xyz(epoch)['xyz_vel']:
         vel.append(j*1000)
     poskep = cart_to_kep(pos, vel)
-    print(poskep)
+    print("KOE (from newly generated TLE): "+str(poskep))
     # if (poskep[4]>0 and oldargp<=0):
     #     revnum=revnum+1
     # oldargp = poskep[4]
@@ -131,18 +133,25 @@ def start():
     print(sI)
 
     # bV and sV data are taken from the onboard magnetometer and sun_sensors.
-
+    bV = [1,1,2]
     # bV and sV data are taken from the onboard magnetometer and sunsensors.
+    sV = [1,2,1]
 
-    # dcm = get_dcm(bV, sV, bI, sI)
-    # q = dcm_to_q(dcm)
-    # qref = get_q_ref.get_q_ref(poskep)                           
-    # qerr = get_q_err(q,qref)                              
-    # thetaerr = get_theta_err(qerr)
-    # mmax = [.1,.1,.1]
-    # mtrans = np.matrix([[1,0,0],[0,1,0],[0,0,1]])
-    # ctorque = np.matrix([0,0,0])
-    # magdip = get_mc(ctorque.getH(),bV,mmax,mtrans)
-    # ctprod = np.cross(magdip,bV)
+    dcm = get_dcm(bV, sV, bI, sI)
+    print("DCM: "+str(dcm))
+    q = dcm_to_q(dcm)
+    print("Quaternion: "+str(q))
+    qref = get_q_ref_nadir(poskep)
+    print("Reference Quaternion: "+str(qref))                      
+    qerr = get_q_err(q, qref)      
+    print("Quaternion Error: "+str(qerr))                    
+    thetaerr = get_theta_err(qerr)
+    print("Theta Error: "+str(thetaerr.getH()))
+    mmax = [.1,.1,.1]
+    mtrans = np.matrix([[1,0,0],[0,1,0],[0,0,1]])
+    ctorque = np.matrix([.01,.05,.075])
+    magdip = get_mc(ctorque.getH(),np.matrix([bV]).getH(),np.matrix([mmax]),mtrans)
+    print("Magnetic Dipole (sent to imtq): "+str(magdip))
+    #ctprod = np.cross(magdip,bV)
 
     # isisimtq.py_k_imtq_start_actuation_dipole(imtq_axis_data(magdip[0], magdip[1], magdip[2]), 800)
