@@ -147,7 +147,7 @@ def start():
     print("Quaternion Error: "+str(qerr))                    
     thetaerr = get_theta_err(qerr)
     print("Theta Error: "+str(thetaerr.getH()))
-    mmax = [.1,.1,.1]
+    mmax = [.2,.2,.2]
     mtrans = np.matrix([[1,0,0],[0,1,0],[0,0,1]])
     ctorque = np.matrix([.01,.05,.075])
     magdip = get_mc(ctorque.getH(),np.matrix([bV]).getH(),np.matrix([mmax]),mtrans)
