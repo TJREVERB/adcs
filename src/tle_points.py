@@ -54,7 +54,7 @@ def propagate(poskep, lastmeanmot, lastmeananom, lasttime, revnum):
     eachline[2][5] = argp[0].rjust(3, " ") + "." + argp[1].ljust(4, '0')
     # print(eachline[2][5])
 
-    alt = 400  # will be gps altitude
+    alt = 400  #TODO: gps alt
     meanmot = (GM/((alt+6378000)**3))**(1/2)/(2*math.pi)*(24*60*60)  # gps alt
     meanmot = str(round(meanmot, 8)).split(".")
     meanmot = meanmot[0].rjust(2, " ") + "." + \
