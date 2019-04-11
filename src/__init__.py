@@ -56,7 +56,7 @@ def start():
         if gps_dummy.data_is_valid(data):  # If the data is valid:
             i = len(data)-1  # Get the last dictionary in the cache.
             # Position state vector.
-            r = [data[i]['x_pos'], data[i]['y_pos'], data[i]['z_pos']]
+            r = [data[i]['x_pos'], data[i]['y_pos'], data[i]['z_pos']]  # ECI frame
             # Velocity state vector.
             vel = [data[i]['x_vel'], data[i]['y_vel'], data[i]['z_vel']]
             epoch = data[i]['time']  # Datetime object representing the epoch.
@@ -134,9 +134,8 @@ def start():
     print(bI)
     print(sI)
 
-    # bV and sV data are taken from the onboard magnetometer and sun_sensors.
-    bV = [1,1,2]
     # bV and sV data are taken from the onboard magnetometer and sunsensors.
+    bV = [1,1,2]
     sV = [1,2,1]
 
     dcm = get_dcm(bV, sV, bI, sI)
