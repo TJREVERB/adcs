@@ -1,4 +1,3 @@
-# BEING WORKED ON BY AYUSH
 import numpy as np
 from .get_dcm import get_dcm
 from .q_mult import q_mult
