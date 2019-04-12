@@ -1,3 +1,9 @@
+import numpy as np
+from .get_dcm import get_dcm
+from .q_mult import q_mult
+from numpy import linalg as LA
+import math
+
 def get_theta_error_sun(poskep):
     for i in range(2, 6):
         poskep[0, i] = poskep[0, i]*math.pi/180
