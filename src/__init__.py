@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from .get_q_ref import *
+from .get_q_ref_nadir import get_q_ref_nadir
 from .get_dcm import get_dcm
 from .get_theta_err import get_theta_err
 from .get_q_err import get_q_err
