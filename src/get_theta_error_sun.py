@@ -9,6 +9,7 @@ def get_theta_error_sun(poskep):
         poskep[0, i] = poskep[0, i]*math.pi/180
     sun = sun_sensor()  # return column vector
     z = getDCM(bV, sV, bI, sI) * np.matrix([0, 0, 1]).getH()
+    theta = math.acos(np.dot(sun, z))
     vecu = np.cross(sun, z)
     uma = LA.norm(vecu)
     vecu = vecu/uma
