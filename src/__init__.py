@@ -152,11 +152,11 @@ def start():
     print("Quaternion Error: "+str(qerr))                    
     thetaerr = get_theta_err(qerr)
     print("Theta Error (radians): "+str(thetaerr.getH()))
-    mmax = [.2,.2,.2]
+    mmax = .2
     mtrans = np.matrix([[1,0,0],[0,1,0],[0,0,1]])
     ctcomm=-1*gain*thetaerr.getH()
     #print(ctcomm)
-    magdip = get_mc(ctcomm.getH(),np.matrix([bV]).getH(),np.matrix([mmax]),mtrans)
+    magdip = get_mc(ctcomm.getH(),np.matrix([bV]).getH(),mmax,mtrans)
     print("Magnetic Dipole (sent to imtq): "+str(magdip))
     ctprod = np.cross(magdip,bV)
     print("Control Torque Produced: "+str(ctprod))
